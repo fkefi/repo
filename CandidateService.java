@@ -4,22 +4,19 @@ import java.util.Map;
 public class CandidateService {
 
     String[][] id = Database.loadTableData(ID, String.class);
-    Map<> candidate = Database.loadTableData(Candidate, Map<?>.class);
-    Map<String, Map<String, Integer>> numbers = Database.loadTableData(allTablesData, Map<?>.class)
+    Map<String,Map<String, Object>> candidate = Database.loadTableData(Candidate, Map<?>.class);
+    Map<String, Map<String, Integer>> numbers = Database.loadTableData(allTablesData, Map<?>.class);
     double[] weight = Database.loadTableData(Weight);
-    double[][] points;
+    double[][] points = new double[candidate.size()][weight.length];
 
     public record Candidate(
     String fullName,
-    String undergraduateDegree,
     String undergraduateUniversity,
     String undergraduateDepartment,
     int undergraduateGrade,
-    String masterDegree,
     String masterUniversity,
     String masterDepartment,
     int masterGrade,
-    String phdDegree,
     String phdUniversity,
     String phdDepartment,
     int phdGrade,
@@ -60,7 +57,30 @@ public class CandidateService {
     } 
 
     private double[][] createPoints () {
-
+        
         return points;
     } 
+
+    public static double[] compareCandidateWithNumbers(Map<String, String> cand, Map<String, Map<String, Integer>> numbers) {
+        
+        String[] fieldsToCompare = {
+        "undergraduateUniversity",
+        "undergraduateDepartment",
+        "masterUniversity",
+        "masterDepartment",
+        "phdUniversity",
+        "phdDepartment",
+        "englishLevel",
+        "frenchLevel",
+        "germanLevel",
+        "spanishLevel",
+        "chineseLevel",
+        "otherLanguageLevel",
+        "workExperienceYears", 
+        "officeSkills",
+        "programmingLanguage"};
+
+    }
+
+
 }

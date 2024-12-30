@@ -6,11 +6,12 @@ import java.util.Map;
 
 public class CandidateService {
 
-    String[][] id = Database.loadTableData(ID, String.class);
-    Map<String, Map<String, Object>> candidates = Database.loadTableData(Candidate, Jackson.class); 
+    
+    String[][] id = SQLiteHandler.fetchTable(ID);
+    Map<String, Map<String, Object>> candidates = SQLiteHandler.fetchJsonAsMap(Candidate); 
     /* Αυτό λειτουργεί μόνο αν η μέθοδος loadTableData έχει ήδη ενσωματώσει τον μηχανισμό αποσειριοποίησης */ 
-    Map<String, Map<String, Integer>> numbers = Database.loadTableData(allTablesData, Jackson.class);
-    double[] weight = Database.loadTableData(Weight);
+    Map<String, Map<String, Integer>> numbers = SQLiteHandler.fetchJsonAsMap(allTablesData);
+    double[] weight = SQLiteHandler.fetchTable(Weight);
     int numberOfCandidates = candidates.size();
     int numberOfCriteria = weight.length;
     double[][] points = createPoints();  // Κλήση της createPoints για να πάρεις τον πίνακα
@@ -25,7 +26,7 @@ public class CandidateService {
         }
 
         Arrays.sort(finalCandidates, (a, b) -> Double.compare(b[1], a[1]));
-        Database.insertTableData("finalCandidates", finalCandidates, Double.class);
+        SQLiteHandler.insertArray("finalCandidates", finalCandidates, finalCandidates.length, 2);
         return finalCandidates;
     } 
 

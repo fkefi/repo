@@ -11,6 +11,7 @@ public class CandidateService {
     Map<String, Map<String, Object>> candidates = SQLiteHandler.fetchJsonAsMap(Candidate); 
     /* Αυτό λειτουργεί μόνο αν η μέθοδος loadTableData έχει ήδη ενσωματώσει τον μηχανισμό αποσειριοποίησης */ 
     Map<String, Map<String, Integer>> numbers = SQLiteHandler.fetchJsonAsMap(allTablesData);
+    // Βαρύτητες για κάθε ένα από τα 18 κριτήρια (πρέπει να είναι σωστά ταξινομημένες)
     double[] weight = SQLiteHandler.fetchTable(Weight);
     int numberOfCandidates = candidates.size();
     int numberOfCriteria = weight.length;

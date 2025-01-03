@@ -14,6 +14,15 @@
         <artifactId>sqlite-jdbc</artifactId>
         <version>3.42.0.0</version>
     </dependency>
+
+    <!-- mailer -->
+ 
+<dependency>
+    <groupId>com.sun.mail</groupId>
+    <artifactId>javax.mail</artifactId>
+    <version>1.6.2</version>
+</dependency>
+
    
     <!-- JACKSON Dependency -->
 

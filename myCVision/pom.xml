@@ -15,14 +15,13 @@
         <version>3.42.0.0</version>
     </dependency>
 
-    <!-- mailer -->
- 
-<dependency>
-    <groupId>com.sun.mail</groupId>
-    <artifactId>javax.mail</artifactId>
-    <version>1.6.2</version>
-</dependency>
 
+   <!-- mailer-->
+<dependency>
+    <groupId>com.sendgrid</groupId>
+    <artifactId>sendgrid</artifactId>
+    <version>4.7.0</version>
+</dependency>
    
     <!-- JACKSON Dependency -->
 

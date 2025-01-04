@@ -16,13 +16,7 @@
     </dependency>
 
 
-   <!-- mailer-->
-<dependency>
-    <groupId>com.sendgrid</groupId>
-    <artifactId>sendgrid</artifactId>
-    <version>4.7.0</version>
-</dependency>
-   
+  
     <!-- JACKSON Dependency -->
 
 <dependency>
@@ -45,7 +39,7 @@
         <version>5.7.0</version>
         <scope>test</scope>
     </dependency>
-  </dependencies>
+ 
 
 
     <!-- Προσθήκη εξάρτησης για το JUnit 4 -->
@@ -55,6 +49,7 @@
         <version>4.13.2</version>
         <scope>test</scope>
     </dependency>
+  </dependencies>
 
 
 

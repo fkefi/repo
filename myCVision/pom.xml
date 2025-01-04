@@ -19,17 +19,12 @@
             <version>3.42.0.0</version>
         </dependency>
 
-<<<<<<< HEAD
-  
-    <!-- JACKSON Dependency -->
-=======
         <!-- SendGrid (sendgrid-java) -->
         <dependency>
             <groupId>com.sendgrid</groupId>
             <artifactId>sendgrid-java</artifactId>
             <version>4.9.1</version>
         </dependency>
->>>>>>> master
 
         <!-- Jackson Dependency -->
         <dependency>
@@ -53,22 +48,6 @@
         </dependency>
     </dependencies>
 
-<<<<<<< HEAD
-    <!-- JUnit 5 Dependency -->
-    <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-api</artifactId>
-        <version>5.7.0</version>
-        <scope>test</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-engine</artifactId>
-        <version>5.7.0</version>
-        <scope>test</scope>
-    </dependency>
- 
-=======
     <build>
         <plugins>
             <!-- Maven Compiler Plugin to set Java version -->
@@ -82,7 +61,6 @@
                     <release>8</release>
                 </configuration>
             </plugin>
->>>>>>> master
 
             <!-- JaCoCo Plugin for Test Coverage -->
             <plugin>
@@ -99,55 +77,6 @@
                 </executions>
             </plugin>
 
-<<<<<<< HEAD
-    <!-- Προσθήκη εξάρτησης για το JUnit 4 -->
-    <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.13.2</version>
-        <scope>test</scope>
-    </dependency>
-  </dependencies>
-
-
-
-<build>
-    <plugins>
-        <!-- JaCoCo Plugin for Test Coverage -->
-        <plugin>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.8.7</version>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>prepare-agent</goal>
-                        <goal>report</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-
-        <!-- Checkstyle Plugin for Code Style -->
-        <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-checkstyle-plugin</artifactId>
-            <version>3.1.2</version>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>checkstyle</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-    </plugins>
-</build>
- 
-
-  </project>
- 
-=======
             <!-- Checkstyle Plugin for Code Style -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -164,4 +93,3 @@
         </plugins>
     </build>
 </project>
->>>>>>> master

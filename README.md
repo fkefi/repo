@@ -1,2 +1,0 @@
-My project repository.
-TODO: configure the repo in /config.

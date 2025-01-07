@@ -9,7 +9,7 @@ public class CandidateService {
     private int numberOfCandidates;
     private int numberOfCriteria;
     private double[][] points;
-    SQLiteHandler handler = new SQLiteHandler("jdbc:sqlite:src/main/resources/my_database.db");
+    SQLiteHandler handler = new SQLiteHandler("C:\\cygwin\\home\\estri\\myrepo\\repo\\myCVision\\src\\main\\resources");
 
     public CandidateService() {
     this.id = handler.fetchTable(ID);

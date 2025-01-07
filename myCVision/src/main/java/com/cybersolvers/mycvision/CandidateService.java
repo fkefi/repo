@@ -1,4 +1,6 @@
 import com.cybersolvers.mycvision;
+import com.cybersolvers.mycvision.SQLiteHandler;
+
 import java.util.*;
 
 public class CandidateService {
@@ -120,6 +122,11 @@ public class CandidateService {
                         Map<String, Integer> categoryData = numbers.get(category);
                         if (categoryData.containsKey(stringValue)) {
                             matchedValuesList.add((double) categoryData.get(stringValue));
+                        } else if ((field.equals("undergraduateUniversity") || field.equals("undergraduateDepartment") || 
+                        field.equals("masterUniversity") || field.equals("masterDepartment") || 
+                        field.equals("phdUniversity") || field.equals("phdDepartment")) && 
+                        !stringValue.equalsIgnoreCase("no")) {
+                       matchedValuesList.add(1.0);
                         } else {
                             System.out.println("Warning: No match found for value " + stringValue + " in category " + category);
                             matchedValuesList.add(0.0);

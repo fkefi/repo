@@ -132,6 +132,45 @@ public class SQLiteHandler {
         }
     }
 
+    // Method 5: Insert a nested Map into the database
+    public void insertNestedMap(String tableName, Map<String, Map<String, Object>> nestedMap) throws SQLException {
+        String createTableQuery = "CREATE TABLE IF NOT EXISTS " + tableName + " (outer_key TEXT, inner_key TEXT, value TEXT);";
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute(createTableQuery);
+        }
+
+        String insertQuery = "INSERT INTO " + tableName + " (outer_key, inner_key, value) VALUES (?, ?, ?);";
+        try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
+            for (Map.Entry<String, Map<String, Object>> outerEntry : nestedMap.entrySet()) {
+                String outerKey = outerEntry.getKey();
+                for (Map.Entry<String, Object> innerEntry : outerEntry.getValue().entrySet()) {
+                    pstmt.setString(1, outerKey);
+                    pstmt.setString(2, innerEntry.getKey());
+                    pstmt.setString(3, innerEntry.getValue().toString());
+                    pstmt.executeUpdate();
+                }
+            }
+        }
+    }
+
+    // Method 6: Retrieve a nested Map from the database
+    public Map<String, Map<String, Object>> fetchNestedMap(String tableName) throws SQLException {
+        String query = "SELECT * FROM " + tableName;
+        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+            Map<String, Map<String, Object>> nestedMap = new HashMap<>();
+            while (rs.next()) {
+                String outerKey = rs.getString("outer_key");
+                String innerKey = rs.getString("inner_key");
+                Object value = rs.getObject("value");
+
+                nestedMap.putIfAbsent(outerKey, new HashMap<>());
+                nestedMap.get(outerKey).put(innerKey, value);
+            }
+            return nestedMap;
+        }
+    }
+
+
     // Close the connection
     public void close() throws SQLException {
         if (connection != null) {

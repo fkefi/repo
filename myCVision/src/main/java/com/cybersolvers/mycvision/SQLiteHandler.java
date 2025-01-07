@@ -139,35 +139,4 @@ public class SQLiteHandler {
         }
     }
 
-    public static void main(String[] args) {
-        try {
-            SQLiteHandler handler = new SQLiteHandler("jdbc:sqlite:sample.db");
-
-            Double[][][] array = {
-                {
-                    {1.1, 1.2},
-                    {1.3, 1.4}
-                },
-                {
-                    {2.1, 2.2},
-                    {2.3, 2.4}
-                }
-            };
-            handler.insertArray("test_table", array, 2, 2, 2);
-    
-            // Ανάκτηση δεδομένων
-            Object fetched = handler.fetchTable("test_table"); // Επιστρέφεται το αντικείμενο όπως είναι
-            System.out.println(Arrays.deepToString((Object[]) fetched)); 
-
-            // Example 2: Insert and fetch JSON as Map
-            Map<String, Object> jsonMap = Map.of("key1", "value1", "key2", "value2");
-            handler.insertJsonAsMap("json_table", jsonMap);
-            Map<String, String> fetchedMap = handler.fetchJsonAsMap("json_table");
-            System.out.println(fetchedMap);
-
-            handler.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 }

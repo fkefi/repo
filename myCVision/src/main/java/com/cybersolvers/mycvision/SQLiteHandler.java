@@ -170,6 +170,45 @@ public class SQLiteHandler {
         }
     }
 
+    // Method 7 : Insert a nested Map with Integer values into the database
+public void insertNestedIntegerData(String tableName, Map<String, Map<String, Integer>> nestedMap) throws SQLException {
+    String createTableQuery = "CREATE TABLE IF NOT EXISTS " + tableName + " (outer_key TEXT, inner_key TEXT, int_value INTEGER);";
+    try (Statement stmt = connection.createStatement()) {
+        stmt.execute(createTableQuery);
+    }
+
+    String insertQuery = "INSERT INTO " + tableName + " (outer_key, inner_key, int_value) VALUES (?, ?, ?);";
+    try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
+        for (Map.Entry<String, Map<String, Integer>> outerEntry : nestedMap.entrySet()) {
+            String outerKey = outerEntry.getKey();
+            for (Map.Entry<String, Integer> innerEntry : outerEntry.getValue().entrySet()) {
+                pstmt.setString(1, outerKey);
+                pstmt.setString(2, innerEntry.getKey());
+                pstmt.setInt(3, innerEntry.getValue()); // Εισαγωγή ακέραιου
+                pstmt.executeUpdate();
+            }
+        }
+    }
+}
+
+// Method 8: Retrieve a nested Map with Integer values from the database
+public Map<String, Map<String, Integer>> fetchNestedIntegerData(String tableName) throws SQLException {
+    String query = "SELECT * FROM " + tableName;
+    try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+        Map<String, Map<String, Integer>> nestedMap = new HashMap<>();
+        while (rs.next()) {
+            String outerKey = rs.getString("outer_key");
+            String innerKey = rs.getString("inner_key");
+            int value = rs.getInt("int_value");
+
+            nestedMap.putIfAbsent(outerKey, new HashMap<>());
+            nestedMap.get(outerKey).put(innerKey, value);
+        }
+        return nestedMap;
+    }
+}
+
+
 
     // Close the connection
     public void close() throws SQLException {

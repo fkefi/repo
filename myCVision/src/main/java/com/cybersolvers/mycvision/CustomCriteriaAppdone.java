@@ -65,9 +65,9 @@ public class CustomCriteriaAppdone {
     private static JFrame mainFrame;
     private static JPanel mainPanel;
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         SwingUtilities.invokeLater(CustomCriteriaAppdone::createAndShowGUI);
-    }
+    }*/
 
     private static void createAndShowGUI() {
         initializeFrame();

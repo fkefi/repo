@@ -1,4 +1,5 @@
-package demo;
+package com.cybersolvers.mycvision;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;

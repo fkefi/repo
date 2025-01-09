@@ -1,0 +1,19 @@
+Full Name: John Smith
+University (Name/No): Massachusetts Institute of Technology
+Department: Computer Science
+Undergraduate Grade: 3.8
+Masters University (Name/No): Stanford University
+Masters Department: Artificial Intelligence
+Masters Grade: 3.9
+PhD University (Name/No): AUEB
+PhD Department: DET
+PhD Grade: 5.5
+English (Excellent/Very Good/Good/No): Good
+French (Excellent/Very Good/Good/No): Good
+German (Excellent/Very Good/Good/No): Very Good
+Spanish (Excellent/Very Good/Good/No): No
+Chinese (Excellent/Very Good/Good/No): No 
+Other Language Level (Excellent/Very Good/Good/No): No
+Years of Experience: 5
+Office Skills (Excellent/Very Good/Good/No): Excellent
+Programming Skills (Excellent/Very Good/Good/No): Yes

@@ -1,7 +1,9 @@
 package com.cybersolvers.mycvision;
-
-import java.util.*;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ResumeService {
     private final String[] levels = {"TELEIA", "POLY KALA", "KALA", "OXI"};
@@ -23,11 +25,11 @@ public class ResumeService {
         this.sqlitehandler = new SQLiteHandler(dburl);
         
         // Initialize database values
-        this.universities = sqlitehandler.fetchTable("universities");
-        this.workExperience = sqlitehandler.fetchTable("workExperience");
-        this.bachelorDept = sqlitehandler.fetchTable("bachelorDept");
-        this.masterDept = sqlitehandler.fetchTable("masterDept");
-        this.phDDept = sqlitehandler.fetchTable("phDDept");
+        this.universities = (String) sqlitehandler.fetchTable("universities");
+        this.workExperience = (String) sqlitehandler.fetchTable("workExperience");
+        this.bachelorDept = (String) sqlitehandler.fetchTable("bachelorDept");
+        this.masterDept = (String) sqlitehandler.fetchTable("masterDept");
+        this.phDDept = (String) sqlitehandler.fetchTable("phDDept");
         
         // Initialize lists
         this.arrays = new ArrayList<>();
@@ -40,7 +42,6 @@ public class ResumeService {
         arrays.add(bachelorDept.split(","));
         arrays.add(masterDept.split(","));
         arrays.add(phDDept.split(","));
-        arrays.add(yesNo);
         
         // Add items to tableNames
         tableNames.add("universities");
@@ -49,7 +50,7 @@ public class ResumeService {
         tableNames.add("bachelorDept");
         tableNames.add("masterDept");
         tableNames.add("phDDept");
-        tableNames.add("yesNo");
+
     }
     
     // Μέθοδος για την αξιολόγηση των κριτηρίων
@@ -112,8 +113,15 @@ public class ResumeService {
             allTablesData.put(tableName, tableData);
         }
         
-        // Αποθήκευση των δεδομένων στη βάση
-        sqlitehandler.insertNestedMap("allTablesData", allTablesData);
+        
+        // Convert Map<String, Map<String, Integer>> toMap<String, Map<String, Object>>
+        Map<String, Map<String, Object>> convertedMap = new LinkedHashMap<>();
+        allTablesData.forEach((key, value) -> {
+            Map<String, Object> innerMap = new LinkedHashMap<>(value);
+            convertedMap.put(key, innerMap);
+        });
+        
+        sqlitehandler.insertNestedMap("allTablesData", convertedMap);
         
         return allTablesData;
     }

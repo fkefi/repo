@@ -16,11 +16,10 @@ public class CandidateService {
     private int numberOfCandidates;
     private int numberOfCriteria;
     private double[][] points;
-
     private String jsonFilePath = "E:\\myCVision\\mycv\\src\\resources\\cv\\output.json"; 
     private String jdbcUrl = "C:\\cygwin64\\home\\irenelianou\\repo\\myCVision\\src\\main\\resources"; 
 
-    SQLiteHandler handler = new SQLiteHandler("C:\\cygwin\\home\\estri\\myrepo\\repo\\myCVision\\src\\main\\resources");
+    SQLiteHandler handler = new SQLiteHandler(jdbcUrl);
 
     public CandidateService() {
         this.id = handler.fetchTable("ID");
@@ -30,11 +29,6 @@ public class CandidateService {
         this.numberOfCandidates = candidates.size();
         this.numberOfCriteria = weight.length;
         this.points = createPoints();
-    }
-
-    public CandidateService(String jsonFilePath, String jdbcUrl) {
-        this.jsonFilePath = jsonFilePath;
-        this.jdbcUrl = jdbcUrl;
     }
 
     public double[][] reviewCandidates() {
@@ -146,63 +140,8 @@ public class CandidateService {
         }
 
         return matchedValuesList.stream().mapToDouble(Double::doubleValue).toArray();
+        
     }
-    public void processCandidates() {
-        SQLiteHandler dbHandler = null;
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(new File(jsonFilePath));
-    
-            dbHandler = new SQLiteHandler(jdbcUrl);
-    
-            Map<String, String> candidateMap = new HashMap<>();
-            for (JsonNode candidateNode : rootNode) { 
 
-                JsonNode fullNameNode = candidateNode.path("fullName");
-    
-                if (!fullNameNode.isMissingNode()) { 
-                    String fullName = fullNameNode.asText();
-                    String code = generateRandomCode();
-                    candidateMap.put(fullName, code);
-                } else {
-                    System.err.println("Ο υποψήφιος δεν έχει πεδίο fullName.");
-                }
-            }
-    
-            dbHandler.insertJsonAsMap("candidates", candidateMap);
-            System.out.println("Τα δεδομένα εισήχθησαν επιτυχώς στη βάση δεδομένων.");
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
-        } finally {
-            if (dbHandler != null) {
-                try {
-                    dbHandler.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-        public String generateRandomCode() {
-            String letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            StringBuilder code = new StringBuilder();
-        
-            Random random = new Random();
-        
-        
-            for (int i = 0; i < 2; i++) {
-                int index = random.nextInt(letters.length());
-                code.append(letters.charAt(index));
-            }
-        
-        
-            for (int i = 0; i < 4; i++) {
-                int digit = random.nextInt(10);
-                code.append(digit);
-            }
-        
-            return code.toString();
-        
-    }
 }
     

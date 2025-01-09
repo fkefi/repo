@@ -114,14 +114,9 @@ public class ResumeService {
         }
         
         
-        // Convert Map<String, Map<String, Integer>> toMap<String, Map<String, Object>>
-        Map<String, Map<String, Object>> convertedMap = new LinkedHashMap<>();
-        allTablesData.forEach((key, value) -> {
-            Map<String, Object> innerMap = new LinkedHashMap<>(value);
-            convertedMap.put(key, innerMap);
-        });
+
         
-        sqlitehandler.insertNestedMap("allTablesData", convertedMap);
+        sqlitehandler.insertNestedIntegerData("allTablesData", allTablesData);
         
         return allTablesData;
     }

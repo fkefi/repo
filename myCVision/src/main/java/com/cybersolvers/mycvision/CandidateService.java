@@ -34,7 +34,7 @@ public class CandidateService  {
         this.points = createPoints();
     }
 
-    public double[][] reviewCandidates() {
+    public double[][] reviewCandidates() throws SQLException {
         double[][] finalCandidates = new double[points.length][2];
 
         for (int i = 0; i < points.length; i++) {

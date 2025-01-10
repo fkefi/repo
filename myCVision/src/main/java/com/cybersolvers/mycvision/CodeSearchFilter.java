@@ -7,15 +7,15 @@ public class CodeSearchFilter extends JDialog {
     private Filter filter;
 
     public CodeSearchFilter(Frame parent) {
-        super(parent, "Αναζήτηση με Κωδικό", true);
+        super(parent, "Search by Code", true);
         filter = new Filter();
         requestCode();
     }
 
     private void requestCode() {
         String input = JOptionPane.showInputDialog(this,
-            "Παρακαλώ εισάγετε τον κωδικό σας:",
-            "Εισαγωγή Κωδικού",
+            "Please enter your code:",
+            "Enter Code",
             JOptionPane.QUESTION_MESSAGE);
 
         if (input != null && !input.trim().isEmpty()) {
@@ -24,14 +24,4 @@ public class CodeSearchFilter extends JDialog {
                 String result = filter.searchByCode(code);
                 JOptionPane.showMessageDialog(this, result);
             } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this,
-                    "Παρακαλώ εισάγετε έναν έγκυρο αριθμητικό κωδικό.",
-                    "Σφάλμα",
-                    JOptionPane.ERROR_MESSAGE);
-                requestCode(); // Ζητάει ξανά τον κωδικό σε περίπτωση λάθους
-            }
-        } else {
-            dispose(); // Κλείνει το παράθυρο αν ο χρήστης πατήσει ακύρωση
-        }
-    }
-}
+   

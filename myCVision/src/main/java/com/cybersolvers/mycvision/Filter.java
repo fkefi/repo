@@ -14,28 +14,28 @@ public class Filter {
             dbHandler = new SQLiteHandler("my_database.db");
             processCandidates();
         } catch (SQLException e) {
-            System.err.println("Σφάλμα βάσης δεδομένων: " + e.getMessage());
+            System.err.println("Database error: " + e.getMessage());
         }
     }
 
     private void processCandidates() throws SQLException {
-        // Χρησιμοποιούμε τη μέθοδο toMap για να πάρουμε τα ονόματα
+        // Using the toMap method to get the names
         List<String> names = reader.getFullNames();
         id = new String[names.size()][2];
         
-        // Γέμισμα του πίνακα id μόνο με τα ονόματα και τους κωδικούς
+        // Filling the id array only with the names and codes
         for (int i = 0; i < names.size(); i++) {
-            id[i][0] = names.get(i);  // Αποθηκεύουμε το όνομα
-            id[i][1] = generateRandomCode();  // Αποθηκεύουμε τον κωδικό
+            id[i][0] = names.get(i);  // Store the name
+            id[i][1] = generateRandomCode();  // Store the code
         }
     
-        // Αποθήκευση στη βάση δεδομένων
+        // Save to the database
         dbHandler.insertArray("id", id, names.size(), 2);
         
-        // Εκτύπωση του πίνακα id
-        System.out.println("\nΠίνακας id (Ονόματα και Κωδικοί):");
+        // Print the id array
+        System.out.println("\nId Table (Names and Codes):");
         System.out.println("----------------------------------------");
-        System.out.println("Όνομα\t\t\tΚωδικός");
+        System.out.println("Name\t\t\tCode");
         System.out.println("----------------------------------------");
         for (String[] candidate : id) {
             System.out.printf("%s\t\t%s\n", candidate[0], candidate[1]);
@@ -49,7 +49,7 @@ public class Filter {
             String name = "";
             int position = -1;
 
-            // Αναζήτηση στον πίνακα id
+            // Search in the id array
             for (String[] candidate : id) {
                 if (candidate[1].equals(searchCodeStr)) {
                     name = candidate[0];
@@ -57,28 +57,28 @@ public class Filter {
                 }
             }
 
-            // Λήψη του πίνακα finalCandidates από τη βάση
-            String[][] finalCandidatesArray = dbHandler.fetchTable("finalCandidates");
+            // Fetch the finalCandidates table from the database
+            Double[][] finalCandidatesArray = dbHandler.fetchTable("finalCandidates");
             
-            // Αναζήτηση θέσης στο finalCandidates
+            // Search position in finalCandidates
             for (int i = 0; i < finalCandidatesArray.length; i++) {
                 if (finalCandidatesArray[i][0].equals(searchCode)) {
                     position = i + 1;
-                    System.out.println("Βρέθηκε στη θέση: " + position + 
-                                     " με βαθμό: " + finalCandidatesArray[i][1]);
+                    System.out.println("Found at position: " + position + 
+                                     " with score: " + finalCandidatesArray[i][1]);
                     break;
                 }
             }
 
             if (position == -1) {
-                return "Ο κωδικός δεν βρέθηκε.";
+                return "Code not found.";
             }
 
-            return String.format("Όνομα: %s, Θέση ταξινόμησης: %d", 
+            return String.format("Name: %s, Ranking position: %d", 
                 name, position);
-} catch (Exception e) {
-            System.err.println("Σφάλμα αναζήτησης: " + e.getMessage());
-            return "Σφάλμα κατά την αναζήτηση";
+        } catch (Exception e) {
+            System.err.println("Search error: " + e.getMessage());
+            return "Error during search";
         }
     }
 

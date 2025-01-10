@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.cybersolvers.mycvision.JsonNode;
 import com.cybersolvers.mycvision.ObjectMapper;
+import com.cybersolvers.mycvision.Txtreader;
 
 public class CandidateService  {
     private String[][] id;
@@ -21,10 +22,11 @@ public class CandidateService  {
     private String jdbcUrl = "C:\\cygwin64\\home\\irenelianou\\repo\\myCVision\\src\\main\\resources"; 
 
     SQLiteHandler handler = new SQLiteHandler(jdbcUrl);
+    Txtreader reader = new Txtreader();
 
     public CandidateService() throws SQLException {
         this.id = handler.fetchTable("ID");
-        this.candidates = getCandidates(jsonFilePath);
+        this.candidates = reader.toMap();
         this.numbers = handler.fetchNestedIntegerData("allTablesData");
         this.weight = handler.fetchTable("Weight");
         this.numberOfCandidates = candidates.size();
@@ -142,22 +144,6 @@ public class CandidateService  {
 
         return matchedValuesList.stream().mapToDouble(Double::doubleValue).toArray();
         
-    }
-
-    public Map<String, Map<String, Object>> getCandidates(String path) {
-        ObjectMapper objectMapper = new ObjectMapper(); // Δημιουργία ObjectMapper
-        try {
-            // Διαβάζουμε το JSON αρχείο και αποθηκεύουμε τα δεδομένα στο candidates
-            candidates = objectMapper.readValue(
-                new File(path),
-                new TypeReference<Map<String, Map<String, Object>>>() {}
-            );
-            System.out.println("Candidates loaded successfully!");
-        } catch (IOException e) {
-            System.err.println("Error reading JSON file: " + e.getMessage());
-        }
-
-        return candidates;
     }
 
 }

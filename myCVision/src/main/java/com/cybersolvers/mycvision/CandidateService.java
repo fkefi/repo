@@ -4,11 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.*;
 import java.util.*;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.cybersolvers.mycvision.JsonNode;
 import com.cybersolvers.mycvision.ObjectMapper;
 
-public class CandidateService {
+public class CandidateService  {
     private String[][] id;
     private Map<String, Map<String, Object>> candidates;
     private Map<String, Map<String, Integer>> numbers;
@@ -21,10 +22,10 @@ public class CandidateService {
 
     SQLiteHandler handler = new SQLiteHandler(jdbcUrl);
 
-    public CandidateService() {
+    public CandidateService() throws SQLException {
         this.id = handler.fetchTable("ID");
-        this.candidates = handler.fetchJsonAsMap("Candidates");
-        this.numbers = handler.fetchJsonAsMap("allTablesData");
+        this.candidates = getCandidates(jsonFilePath);
+        this.numbers = handler.fetchNestedIntegerData("allTablesData");
         this.weight = handler.fetchTable("Weight");
         this.numberOfCandidates = candidates.size();
         this.numberOfCriteria = weight.length;
@@ -141,6 +142,22 @@ public class CandidateService {
 
         return matchedValuesList.stream().mapToDouble(Double::doubleValue).toArray();
         
+    }
+
+    public Map<String, Map<String, Object>> getCandidates(String path) {
+        ObjectMapper objectMapper = new ObjectMapper(); // Δημιουργία ObjectMapper
+        try {
+            // Διαβάζουμε το JSON αρχείο και αποθηκεύουμε τα δεδομένα στο candidates
+            candidates = objectMapper.readValue(
+                new File(path),
+                new TypeReference<Map<String, Map<String, Object>>>() {}
+            );
+            System.out.println("Candidates loaded successfully!");
+        } catch (IOException e) {
+            System.err.println("Error reading JSON file: " + e.getMessage());
+        }
+
+        return candidates;
     }
 
 }

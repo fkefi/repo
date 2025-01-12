@@ -6,19 +6,19 @@ import java.util.List;
 import java.util.Map;
 
 public class ResumeService {
-    private final String[] levels = {"TELEIA", "POLY KALA", "KALA", "OXI"};
+    public final String[] levels = {"TELEIA", "POLY KALA", "KALA", "OXI"};
     
     private final String dburl = "C:\\cygwin64\\home\\efifk\\repo\\myCVision\\src\\main\\resources";
     private final SQLiteHandler sqlitehandler;
     
-    private final String universities;
-    private final String workExperience;
-    private final String bachelorDept;
-    private final String masterDept;
-    private final String phDDept;
+    public final String universities;
+    public final String workExperience;
+    public final String bachelorDept;
+    public final String masterDept;
+    public final String phDDept;
     
-    private final List<String[]> arrays;
-    private final List<String> tableNames;
+    public  final List<String[]> arrays;
+    public final List<String> tableNames;
     
     // Constructor
     public ResumeService() throws SQLException {
@@ -120,4 +120,8 @@ public class ResumeService {
         
         return allTablesData;
     }
+
+    @SuppressWarnings("unused")
+    Map<String, Map<String, Integer>> result = evaluateMultipleTablesToJson();
+
 }

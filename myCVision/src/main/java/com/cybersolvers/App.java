@@ -1,12 +1,12 @@
-package com.cybersolvers;
-
-import java.util.Scanner;
+package com.cybersolvers.mycvision.*;
 
 import com.cybersolvers.mycvision.*;
+import java.sql.SQLException;
+import java.util.Scanner;
 
 public class App 
 {
-    public static void main( String[] args )
+    public static void main( String[] args ) throws SQLException
     {
 
         // Κλήση μεθόδου για γραφικά 

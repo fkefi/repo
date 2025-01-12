@@ -24,4 +24,14 @@ public class CodeSearchFilter extends JDialog {
                 String result = filter.searchByCode(code);
                 JOptionPane.showMessageDialog(this, result);
             } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this,
+                    "Παρακαλώ εισάγετε έναν έγκυρο αριθμό",
+                    "Σφάλμα Εισαγωγής",
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            dispose(); 
+        }
+    }
+}
    

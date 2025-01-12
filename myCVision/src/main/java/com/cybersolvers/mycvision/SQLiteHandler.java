@@ -6,9 +6,17 @@ public class SQLiteHandler {
 
     private Connection connection;
 
-    // Constructor: Connects to the SQLite database
-    public SQLiteHandler(String dbUrl) throws SQLException {
-        connection = DriverManager.getConnection(dbUrl);
+    public SQLiteHandler() throws Exception {
+        this.connection = connect();
+    }
+
+    public Connection connect() throws Exception {
+
+        String dbPath = this.getClass().getClassLoader().getResource("database.db").getPath();
+
+        String url = "jdbc:sqlite:" + dbPath;
+
+        return DriverManager.getConnection(url);
     }
 
     // Method 1: Insert a multidimensional array into the database

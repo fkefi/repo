@@ -70,9 +70,4 @@ public class MailerService {
         }
     }
 
-    public static void main(String[] args) throws SQLException {
-        // Δημιουργία αντικειμένου MailerService και αποστολή του email
-        MailerService mailerService = new MailerService();
-        mailerService.sendEmail("recipient_email@example.com");
-    }
 }

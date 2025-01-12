@@ -1,5 +1,7 @@
 package com.cybersolvers;
 
+import java.util.Scanner;
+
 public class App 
 {
     public static void main( String[] args )
@@ -18,6 +20,13 @@ public class App
         }
 
         // Κλήση μεθόδου MailerService για αποστολή των αποτελεσμάτων στην εταιρία
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.print("Enter recipient email: ");
+        String recipientEmail = scanner.nextLine(); // Εισαγωγή email από τον χρήστη
+
+        MailerService mailerService = new MailerService();
+        mailerService.sendEmail("recipientEmail");
         
     }
 }

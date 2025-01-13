@@ -1,16 +1,20 @@
 package com.cybersolvers.mycvision;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.cybersolvers.mycvision.URLFinder.findResourcePath;
-
 public class ResumeService {
     public final String[] levels = {"TELEIA", "POLY KALA", "KALA", "OXI"};
     
-    private final String dburl = findResourcePath("my_database.db");
+
+    URL resource = ResumeService.class.getClassLoader().getResource("mydatabase.db");
+    String dbPath = resource.getPath();
+    String dbUrl = "jdbc:sqlite:" + dbPath;
+
+
     private final SQLiteHandler sqlitehandler;
     
     public final String universities;
@@ -24,7 +28,7 @@ public class ResumeService {
     
     // Constructor
     public ResumeService() throws SQLException {
-        this.sqlitehandler = new SQLiteHandler(dburl);
+        this.sqlitehandler = new SQLiteHandler(dbUrl);
         
         // Initialize database values
         this.universities = (String) sqlitehandler.fetchTable("universities");

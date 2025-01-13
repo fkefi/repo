@@ -5,10 +5,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.cybersolvers.mycvision.URLFinder.findResourcePath;
+
 public class ResumeService {
     public final String[] levels = {"TELEIA", "POLY KALA", "KALA", "OXI"};
     
-    private final String dburl = "C:\\cygwin64\\home\\efifk\\repo\\myCVision\\src\\main\\resources";
+    private final String dburl = findResourcePath("my_database.db");
     private final SQLiteHandler sqlitehandler;
     
     public final String universities;

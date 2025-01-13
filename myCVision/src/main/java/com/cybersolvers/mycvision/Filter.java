@@ -62,7 +62,7 @@ public class Filter {
             
             // Search position in finalCandidates
             for (int i = 0; i < finalCandidatesArray.length; i++) {
-                if (finalCandidatesArray[i][0].equals(searchCode)) {
+                if (finalCandidatesArray[i][0] == searchCode) {
                     position = i + 1;
                     System.out.println("Found at position: " + position + 
                                      " with score: " + finalCandidatesArray[i][1]);

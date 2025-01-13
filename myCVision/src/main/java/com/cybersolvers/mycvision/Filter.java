@@ -35,7 +35,7 @@ public class Filter {
         }
     
         // Save to the database
-        dbHandler.insertArray("id", id, names.size(), 2);
+        dbHandler.insertStringArray("id", id);
         
         // Print the id array
         System.out.println("\nId Table (Names and Codes):");

@@ -180,8 +180,6 @@ class TestCandidateService {
         Mockito.when(mockHandler.fetchDouble1DArray("Weight")).thenReturn(weight);
 
         candidateService.initialize();
-        candidateService.handler = mockHandler;
-        candidateService.reader = mockReader;
         doNothing().when(handler).insertDoubleArray("finalCandidates", finalCandidates);
 
 

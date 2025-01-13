@@ -8,9 +8,15 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 public class Txtreader {
+
+    public Txtreader() {
+
+    }
+
     private String fullName;
     private String undergraduateUniversity;
     private String undergraduateDepartment;
@@ -173,7 +179,7 @@ public class Txtreader {
         programmingLanguage= null;
     }
 
-    private Map<String, Map<String, Object>> toMap() {
+    protected Map<String, Map<String, Object>> toMap() {
         Map<String, Map<String, Object>> candidates = new LinkedHashMap<>();
         Map<String, Object> candidateData = new LinkedHashMap<>();
         
@@ -203,4 +209,18 @@ public class Txtreader {
         
         return candidates;
     }
-}
+
+    public List<String> getFullNames() {
+        List<String> names = new ArrayList<>();
+        Map<String, Map<String, Object>> candidatesData = toMap();
+    
+        for (Map.Entry<String, Map<String, Object>> entry : candidatesData.entrySet()) {
+            String fullName = (String) entry.getValue().get("fullName");
+            if (fullName != null) {
+                names.add(fullName);
+            }
+        }
+    
+        return names;
+    }
+}   

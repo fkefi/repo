@@ -41,6 +41,29 @@ public class App
                 e.printStackTrace();
             }
         }
+
+        //Κλήση μεθόδου για κατάθεση βιογραφικών
+        JFrame cvGuiFrame = CVSubmissionApp2.startCVSubmissionApp();
+
+        cvGuiFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                synchronized (lock) {
+                    lock.notify(); // Ειδοποιεί την κύρια ροή ότι το παράθυρο της CVSubmissionApp έχει κλείσει
+                }
+            }
+        });
+
+        // Περιμένει μέχρι να κλείσει το παράθυρο της CVSubmissionApp
+        synchronized (lock) {
+            try {
+                lock.wait(); // Περιμένει το κλείσιμο του παραθύρου της CVSubmissionApp
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+
         //Κλήση μεθόδου για txt parsing
 
         // Κλήση μεθοδού CandidateService για την δημηιουργία τελικού πίνακα και ταξινόμιση υποψηφίων

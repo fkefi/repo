@@ -1,15 +1,7 @@
 package com.cybersolvers.mycvision;
 import java.net.URL;
-import java.io.File;
-import java.io.IOException;
 import java.sql.*;
 import java.util.*;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.cybersolvers.mycvision.JsonNode;
-import com.cybersolvers.mycvision.ObjectMapper;
-import com.cybersolvers.mycvision.SQLiteHandler;
-import com.cybersolvers.mycvision.Txtreader;
 
 public class CandidateService  {
     private String[][] id;
@@ -26,7 +18,7 @@ public class CandidateService  {
 
     private final SQLiteHandler handler;
 
-    Txtreader reader = new Txtreader();
+    Txtreader reader;
 
     public CandidateService() throws SQLException {
         this.id = handler.fetchStringArray("ID");
@@ -37,6 +29,7 @@ public class CandidateService  {
         this.numberOfCriteria = weight.length;
         this.points = createPoints();
         this.handler = new SQLiteHandler(dbUrl);
+        this.reader = new Txtreader();
     }
 
     public double[][] reviewCandidates() throws SQLException {

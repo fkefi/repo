@@ -2,16 +2,21 @@ package com.cybersolvers.mycvision;
 
 import java.util.List;
 import java.sql.SQLException;
+import java.net.URL;
 
 public class Filter {
     private String[][] id;
     private Txtreader reader;
     private SQLiteHandler dbHandler;
+    URL resource = Filter.class.getClassLoader().getResource("my_database.db");
+    String dbPath = resource.getPath();
+    String dbUrl = "jdbc:sqlite:" + dbPath;
+
 
     public Filter() {
         reader = new Txtreader();
         try {
-            dbHandler = new SQLiteHandler("my_database.db");
+            this.dbHandler = new SQLiteHandler(dbUrl);
             processCandidates();
         } catch (SQLException e) {
             System.err.println("Database error: " + e.getMessage());

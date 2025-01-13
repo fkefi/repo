@@ -3,6 +3,8 @@ import java.net.URL;
 import java.sql.*;
 import java.util.*;
 
+import com.cybersolvers.mycvision.SQLiteHandler;
+
 public class CandidateService  {
     private String[][] id;
     private Map<String, Map<String, Object>> candidates;
@@ -17,10 +19,11 @@ public class CandidateService  {
     String dbUrl = "jdbc:sqlite:" + dbPath;
 
     private final SQLiteHandler handler;
-
     Txtreader reader;
 
     public CandidateService() throws SQLException {
+        this.handler = new SQLiteHandler(dbUrl);
+        this.reader = new Txtreader();
         this.id = handler.fetchStringArray("ID");
         this.candidates = reader.toMap();
         this.numbers = handler.fetchMapFromDatabase("allTablesData");
@@ -28,8 +31,6 @@ public class CandidateService  {
         this.numberOfCandidates = candidates.size();
         this.numberOfCriteria = weight.length;
         this.points = createPoints();
-        this.handler = new SQLiteHandler(dbUrl);
-        this.reader = new Txtreader();
     }
 
     public double[][] reviewCandidates() throws SQLException {

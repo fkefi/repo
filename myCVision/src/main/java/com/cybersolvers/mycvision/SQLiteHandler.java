@@ -53,6 +53,58 @@ public class SQLiteHandler {
             }
         }
     }
+
+     // Method Retrieve an array from the database
+     public Object fetchTable(String tableName) throws SQLException {
+        String query = "SELECT * FROM " + tableName;
+        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+    
+            // Detect the maximum dimensions
+            int maxDim = columnCount - 1; // Exclude the "value" column
+            List<int[]> indicesList = new ArrayList<>();
+            List<Object> values = new ArrayList<>();
+    
+            // Retrieve all rows and store indices and values
+            while (rs.next()) {
+                int[] indices = new int[maxDim];
+                for (int i = 0; i < maxDim; i++) {
+                    indices[i] = rs.getInt(i + 1);
+                }
+                indicesList.add(indices);
+                values.add(rs.getObject(columnCount)); // Keep the exact type from the database
+            }
+    
+            // Calculate dimensions of the array
+            int[] dimensions = new int[maxDim];
+            for (int[] indices : indicesList) {
+                for (int i = 0; i < maxDim; i++) {
+                    dimensions[i] = Math.max(dimensions[i], indices[i] + 1);
+                }
+            }
+    
+            // Detect the type dynamically based on the first value
+            Class<?> valueClass = values.isEmpty() ? Object.class : values.get(0).getClass();
+    
+            // Create the array dynamically
+            Object array = java.lang.reflect.Array.newInstance(valueClass, dimensions);
+            for (int i = 0; i < indicesList.size(); i++) {
+                int[] indices = indicesList.get(i);
+                Object value = values.get(i);
+    
+                // Navigate to the correct position in the array
+                Object current = array;
+                for (int j = 0; j < indices.length - 1; j++) {
+                    current = java.lang.reflect.Array.get(current, indices[j]);
+                }
+                java.lang.reflect.Array.set(current, indices[indices.length - 1], value);
+            }
+    
+            return array;
+        }
+    }
+    
         
 
     

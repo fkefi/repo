@@ -11,7 +11,9 @@ import java.util.List;
 
 public class CVSubmissionApp2 {
 
-    public static void main(String[] args) {
+    public static Path cvFolder;
+    
+    public static void startCVSubmissionApp() {
         // Δημιουργία του κύριου frame
         JFrame frame = new JFrame("Κατάθεση Βιογραφικών");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -134,21 +136,42 @@ public class CVSubmissionApp2 {
     }
 
     private static void saveCVsToFolder(DefaultListModel<String> cvListModel) {
-        Path cvFolder = Paths.get("E:\\myCVision\\mycv\\src\\resources\\cv");
+        String userDesktop = System.getProperty("user.home") + File.separator + "Desktop";
+        Path cvFolder = Paths.get(userDesktop, "CV");
+
         try {
+            // Έλεγχος αν υπάρχει ο φάκελος Desktop
+            if (!Files.exists(cvFolder.getParent())) {
+                throw new IOException("Δεν βρέθηκε η επιφάνεια εργασίας.");
+            }
+
+            // Δημιουργία του φακέλου CV
             Files.createDirectories(cvFolder);
+
+            // Επιβεβαίωση δημιουργίας φακέλου
+            if (!Files.isDirectory(cvFolder)) {
+                throw new IOException("Αποτυχία δημιουργίας του φακέλου CV.");
+            }
+
+            // Εκτύπωση του μονοπατιού
+            System.out.println("Αποθήκευση αρχείων στον φάκελο: " + cvFolder);
+
+            // Αντιγραφή αρχείων
             for (int i = 0; i < cvListModel.getSize(); i++) {
                 Path source = Paths.get(cvListModel.getElementAt(i));
                 Path target = cvFolder.resolve(source.getFileName());
                 Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+                System.out.println("Αντιγραφή: " + source + " -> " + target);
             }
+
+            System.out.println("Τα βιογραφικά αποθηκεύτηκαν στον φάκελο: " + cvFolder);
+
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Σφάλμα κατά την αποθήκευση των αρχείων: " + e.getMessage(), "Σφάλμα", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-        
+
+    public static Path getCVPath() {
+        return cvFolder;
+    }
 }
-    
-
-

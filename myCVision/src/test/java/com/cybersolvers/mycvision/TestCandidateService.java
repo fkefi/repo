@@ -1,5 +1,8 @@
 package test.java.com.cybersolvers;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 class TestCandidateService {
 
     private CandidateService candidateService;
@@ -158,14 +161,14 @@ class TestCandidateService {
                 "6++", 6
         ));
 
-        Mockito.when(mockHandler.fetchNestedIntegerData("allTablesData")).thenReturn(numbers);
+        Mockito.when(mockHandler.fetchMapFromDatabase("allTablesData")).thenReturn(numbers);
 
         String[][] id = new String[][]{
                 {"John Doe", "1"},
                 {"Jane Smith", "2"},
                 {"Alice Johnson", "4"}
         };
-        Mockito.when(mockHandler.fetchTable("ID")).thenReturn(id);
+        Mockito.when(mockHandler.fetchStringArray("ID")).thenReturn(id);
         
         
         double[] weight = new double[]{
@@ -174,11 +177,12 @@ class TestCandidateService {
                 0.04, 0.07
         };
 
-        Mockito.when(mockHandler.fetchTable("Weight")).thenReturn(weight);
+        Mockito.when(mockHandler.fetchDouble1DArray("Weight")).thenReturn(weight);
 
         candidateService.initialize();
         candidateService.handler = mockHandler;
         candidateService.reader = mockReader;
+        doNothing().when(handler).insertDoubleArray("finalCandidates", finalCandidates);
 
 
     }

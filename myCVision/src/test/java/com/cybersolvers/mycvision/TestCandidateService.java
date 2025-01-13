@@ -14,7 +14,7 @@ class TestCandidateService {
     private SQLiteHandler mockHandler;
     private Txtreader mockReader;
 
-    @Before
+
     public void setUp() throws SQLException {
         candidateService = new CandidateService();
         mockHandler = Mockito.mock(SQLiteHandler.class);
@@ -288,7 +288,7 @@ class TestCandidateService {
 
     }
 
-    @After
+    
     public void tearDown() {
         candidateService = null;
     }

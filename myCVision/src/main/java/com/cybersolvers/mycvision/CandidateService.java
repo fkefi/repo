@@ -6,19 +6,19 @@ import java.util.*;
 import com.cybersolvers.mycvision.SQLiteHandler;
 
 public class CandidateService  {
-    private String[][] id;
-    private Map<String, Map<String, Object>> candidates;
-    private Map<String, Map<String, Integer>> numbers;
-    private double[] weight;
-    private int numberOfCandidates;
-    private int numberOfCriteria;
-    private double[][] points;
-    private String jsonFilePath = "E:\\myCVision\\mycv\\src\\resources\\cv\\output.json"; 
+    protected String[][] id;
+    protected Map<String, Map<String, Object>> candidates;
+    protected Map<String, Map<String, Integer>> numbers;
+    protected double[] weight;
+    protected int numberOfCandidates;
+    protected int numberOfCriteria;
+    protected double[][] points;
+    protected String jsonFilePath = "E:\\myCVision\\mycv\\src\\resources\\cv\\output.json"; 
     URL resource = CandidateService.class.getClassLoader().getResource("mydatabase.db");
     String dbPath = resource.getPath();
     String dbUrl = "jdbc:sqlite:" + dbPath;
 
-    private final SQLiteHandler handler;
+    protected final SQLiteHandler handler;
     Txtreader reader;
 
     public CandidateService() throws SQLException {
@@ -47,7 +47,7 @@ public class CandidateService  {
         return finalCandidates;
     }
 
-    private double calculateScore(int i) {
+    protected double calculateScore(int i) {
         double score = 0.0;
         for (int j = 1; j < points[i].length; j++) {
             score += points[i][j] * weight[j - 1];
@@ -55,7 +55,7 @@ public class CandidateService  {
         return score;
     }
 
-    private double[][] createPoints() {
+    protected double[][] createPoints() {
         double[][] points = new double[numberOfCandidates][numberOfCriteria + 1];
         int index = 0;
 
@@ -83,7 +83,7 @@ public class CandidateService  {
         return points;
     }
 
-    private double[] compareCandidateWithNumbers(Map<String, Object> cand, Map<String, Map<String, Integer>> numbers, double uniqueId) {
+    protected double[] compareCandidateWithNumbers(Map<String, Object> cand, Map<String, Map<String, Integer>> numbers, double uniqueId) {
         List<Double> matchedValuesList = new ArrayList<>();
         matchedValuesList.add(uniqueId);
 

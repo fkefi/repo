@@ -1,5 +1,5 @@
 package com.cybersolvers.mycvision;
-
+import java.net.URL;
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
@@ -20,9 +20,12 @@ public class CandidateService  {
     private int numberOfCriteria;
     private double[][] points;
     private String jsonFilePath = "E:\\myCVision\\mycv\\src\\resources\\cv\\output.json"; 
-    private String jdbcUrl = "C:\\cygwin64\\home\\irenelianou\\repo\\myCVision\\src\\main\\resources"; 
+    URL resource = CandidateService.class.getClassLoader().getResource("mydatabase.db");
+    String dbPath = resource.getPath();
+    String dbUrl = "jdbc:sqlite:" + dbPath;
 
-    SQLiteHandler handler = new SQLiteHandler(jdbcUrl);
+    private final SQLiteHandler handler;
+
     Txtreader reader = new Txtreader();
 
     public CandidateService() throws SQLException {
@@ -33,6 +36,7 @@ public class CandidateService  {
         this.numberOfCandidates = candidates.size();
         this.numberOfCriteria = weight.length;
         this.points = createPoints();
+        this.handler = new SQLiteHandler(dbUrl);
     }
 
     public double[][] reviewCandidates() throws SQLException {

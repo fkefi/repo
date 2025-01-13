@@ -296,41 +296,39 @@ public class CustomCriteriaApp {
                     String weightText = weightFields.get(WEIGHT_CRITERIA[i]).getText().trim();
                     weights[i] = Double.parseDouble(weightText);
                 }
-                handler.insertArray("weights", weights, weights.length);
+                handler.insert1DdoubleArray("weights", weights);
                 
                 // Save bachelor universities as string array
                 List<String> bachelorUniList = selections.getOrDefault("bachelor_universities", new ArrayList<>());
                 String[] bachelorUniversities = bachelorUniList.toArray(new String[0]);
-                handler.insertArray("bachelorUniversities", bachelorUniversities, bachelorUniversities.length);
+                handler.insert1DStringArray("universities", bachelorUniversities);
                 
                 // Save work experience as string array
                 List<String> workExpList = selections.getOrDefault("work_experience", new ArrayList<>());
                 String[] workExperience = workExpList.toArray(new String[0]);
-                handler.insertArray("workExperience", workExperience, workExperience.length);
+                handler.insert1DStringArray("workExp", workExperience);
                 
                 // Save department selections as string arrays
                 // Bachelor departments
                 List<String> bachelorDeptList = selections.getOrDefault("bachelor_departments", new ArrayList<>());
                 String[] bachelorDept = bachelorDeptList.toArray(new String[0]);
-                handler.insertArray("bachelorDepartments", bachelorDept, bachelorDept.length);
+                handler.insert1DStringArray("bachelorDepartments", bachelorDept);
                 
                 // Master departments
                 List<String> masterDeptList = selections.getOrDefault("master_departments", new ArrayList<>());
                 String[] masterDept = masterDeptList.toArray(new String[0]);
-                handler.insertArray("masterDepartments", masterDept, masterDept.length);
+                handler.insert1DStringArray("masterDepartments", masterDept);
                 
                 // PhD departments
                 List<String> phdDeptList = selections.getOrDefault("phd_departments", new ArrayList<>());
                 String[] phdDept = phdDeptList.toArray(new String[0]);
-                handler.insertArray("phdDepartments", phdDept, phdDept.length);
+                handler.insert1DStringArray("phdDepartments", phdDept);
                 
-                Map<String, Object> degrees = new LinkedHashMap<>();
-                for (Map.Entry<String, String> entry : degreeSelections.entrySet()) {
-                    degrees.put(entry.getKey(), entry.getValue() != null ? entry.getValue() : "-");
-                }
-                handler.insertJsonAsMap("degrees", degrees);
+                // Save degrees 
+                List<String> degreeList = selections.getOrDefault("degrees", new ArrayList<>());
+                String[] degrees = degreeList.toArray(new String[0]);
+                handler.insert1DStringArray("degrees", degrees);
                 
-                displayAllSavedData();
                 mainFrame.dispose();
                 
             } catch (SQLException e) {
@@ -406,50 +404,5 @@ private static void saveSelections(Map<String, Integer> weights) {
         return new String[]{"Java", "Java Script", "C", "C++","JavaScript", "HTML", "CSS",
         "Assembly","PowerShell", "Matlab", "SQL", "AutoCad", "SolidWorks", "PhotoShop", 
         "Premiere Pro", "Illustrator", "SPSS", "Stata", "Docker", "Google Workspace","Softone", "Epsilon", "Atlantis"};
-    }
-
-    private void displayAllSavedData() {
-        try {
-            // Display weights
-            Map<String, Object> savedWeights = handler.fetchJsonAsMap("weight");
-            System.out.println("\nSaved weights:");
-            for (String criterion : WEIGHT_CRITERIA) {
-                System.out.println(criterion + ": " + savedWeights.get(criterion));
-            }
-
-            // Display universities
-            System.out.println("\nBachelor Universities:");
-            System.out.println(handler.fetchJsonAsMap("bachelorUni").get("universities"));
-            
-            System.out.println("\nMaster Universities:");
-            System.out.println(handler.fetchJsonAsMap("masterUni").get("universities"));
-            
-            System.out.println("\nPhD Universities:");
-            System.out.println(handler.fetchJsonAsMap("phdUni").get("universities"));
-
-            // Display departments
-            System.out.println("\nBachelor Departments:");
-            System.out.println(handler.fetchJsonAsMap("bachelorDept").get("departments"));
-            
-            System.out.println("\nMaster Departments:");
-            System.out.println(handler.fetchJsonAsMap("masterDept").get("departments"));
-            
-            System.out.println("\nPhD Departments:");
-            System.out.println(handler.fetchJsonAsMap("phdDept").get("departments"));
-
-            // Display degree requirements
-            System.out.println("\nDegree Requirements:");
-            Map<String, Object> degrees = handler.fetchJsonAsMap("degrees");
-            for (Map.Entry<String, Object> entry : degrees.entrySet()) {
-                System.out.println(entry.getKey() + ": " + entry.getValue());
-            }
-
-            // Display work experience
-            System.out.println("\nWork Experience:");
-            System.out.println(handler.fetchJsonAsMap("workExperience").get("experience"));
-
-        } catch (SQLException e) {
-            System.err.println("Error fetching data: " + e.getMessage());
-        }
     }
 }

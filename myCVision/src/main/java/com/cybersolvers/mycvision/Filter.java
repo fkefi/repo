@@ -58,7 +58,7 @@ public class Filter {
             }
 
             // Fetch the finalCandidates table from the database
-            Double[][] finalCandidatesArray = (Double[][]) dbHandler.fetchTable("finalCandidates");
+            double[][] finalCandidatesArray = dbHandler.fetchDoubleArray("finalCandidates");
             
             // Search position in finalCandidates
             for (int i = 0; i < finalCandidatesArray.length; i++) {

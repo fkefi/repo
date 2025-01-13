@@ -45,7 +45,7 @@ public class CandidateService  {
         }
 
         Arrays.sort(finalCandidates, (a, b) -> Double.compare(b[1], a[1]));
-        handler.insertDoubleArray("finalCandidates", finalCandidates, finalCandidates.length, 2);
+        handler.insertDoubleArray("finalCandidates", finalCandidates);
         return finalCandidates;
     }
 

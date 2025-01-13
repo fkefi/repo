@@ -65,7 +65,8 @@ public class App
 
 
         //Κλήση μεθόδου για txt parsing
-
+        Txtreader reader = new Txtreader();
+        reader.processFiles();
         // Κλήση μεθοδού CandidateService για την δημηιουργία τελικού πίνακα και ταξινόμιση υποψηφίων
         CandidateService service = new CandidateService();
         double[][] results = service.reviewCandidates();

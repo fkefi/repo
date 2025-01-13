@@ -1,4 +1,5 @@
-package com.cybersolvers.mycvision.*;
+package com.cybersolvers.mycvision;
+
 
 import com.cybersolvers.mycvision.*;
 import java.sql.SQLException;

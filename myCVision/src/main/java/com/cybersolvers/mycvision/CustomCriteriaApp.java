@@ -1,5 +1,6 @@
 package com.cybersolvers.mycvision;
 
+import java.net.URL;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
@@ -10,8 +11,12 @@ import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
 import java.sql.SQLException;
 import java.io.File;
+import java.net.URL;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-public class CustomCriteriaAppdone {
+
+public class CustomCriteriaApp {
     // Constants
     private static final int MAX_UNIVERSITIES = 10;
     private static final String[] DEGREE_OPTIONS = {"-", "Yes", "No"};
@@ -38,23 +43,11 @@ public class CustomCriteriaAppdone {
         "officeSkills",
         "programmingLanguage"
     };
-    private static SQLiteHandler handler;
-    
-    static {
-        try {
-            String userDir = System.getProperty("user.dir");
-            File resourceDir = new File(userDir + File.separator + "src" + 
-                                      File.separator + "main" + 
-                                      File.separator + "resources");
-            resourceDir.mkdirs(); // Create directories if they don't exist
-            
-            String dbPath = "jdbc:sqlite:" + resourceDir.getAbsolutePath() + 
-                           File.separator + "my_database.db";
-            handler = new SQLiteHandler(dbPath);
-        } catch (SQLException e) { 
-            throw new RuntimeException(e);
-        }
-    }
+
+    URL resource = ResumeService.class.getClassLoader().getResource("my_database.db");
+    String dbPath = resource.getPath();
+    String dbUrl = "jdbc:sqlite:" + dbPath;
+    private final SQLiteHandler handler;
 
     // Data structures
     private static Map<String, JTextField> weightFields = new HashMap<>();
@@ -65,21 +58,24 @@ public class CustomCriteriaAppdone {
     private static JFrame mainFrame;
     private static JPanel mainPanel;
 
-    /*public static void main(String[] args) {
-        SwingUtilities.invokeLater(CustomCriteriaAppdone::createAndShowGUI);
-    }*/
+    // Constructor
+    public CustomCriteriaApp() throws SQLException {
+        handler = new SQLiteHandler(dbUrl);
+    }
 
-    private static void createAndShowGUI() {
+    public JFrame createAndShowGUI() {
         initializeFrame();
         initializeMainPanel();
         addComponents();
         finalizeFrame();
+        return mainFrame;
     }
 
     private static void initializeFrame() {
         mainFrame = new JFrame("myCVision - CV Evaluation System");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(900, 800);
+        mainFrame.setLayout(new BorderLayout());
         loadLogo();
     }
 
@@ -97,7 +93,7 @@ public class CustomCriteriaAppdone {
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
     }
 
-    private static void addComponents() {
+    private void addComponents() {
         GridBagConstraints gbc = createGridBagConstraints();
         
         // Add degree selection section
@@ -282,7 +278,7 @@ public class CustomCriteriaAppdone {
         };
     }
 
-    private static void addSubmitButton(GridBagConstraints gbc) {
+    private void addSubmitButton(GridBagConstraints gbc) {
         JButton submitButton = new JButton("Submit");
         submitButton.addActionListener(e -> handleSubmission());
         
@@ -291,53 +287,48 @@ public class CustomCriteriaAppdone {
         mainPanel.add(submitButton, gbc);
     }
 
-    private static void handleSubmission() {
+    private void handleSubmission() {
         if (validateWeights()) {
             try {
-                // Save weights (existing code)
-                Map<String, Object> weightMap = new LinkedHashMap<>();
-                for (String criterion : WEIGHT_CRITERIA) {
-                    weightMap.put(criterion, weightFields.get(criterion).getText().trim());
+                // Save weights as double array
+                double[] weights = new double[WEIGHT_CRITERIA.length];
+                for (int i = 0; i < WEIGHT_CRITERIA.length; i++) {
+                    String weightText = weightFields.get(WEIGHT_CRITERIA[i]).getText().trim();
+                    weights[i] = Double.parseDouble(weightText);
                 }
-                handler.insertJsonAsMap("weight", weightMap);
+                handler.insertArray("weights", weights, weights.length);
                 
-                // Save university selections
-                Map<String, Object> bachelorUni = new LinkedHashMap<>();
-                bachelorUni.put("universities", selections.getOrDefault("bachelor_universities", new ArrayList<>()));
-                handler.insertJsonAsMap("bachelorUni", bachelorUni);
+                // Save bachelor universities as string array
+                List<String> bachelorUniList = selections.getOrDefault("bachelor_universities", new ArrayList<>());
+                String[] bachelorUniversities = bachelorUniList.toArray(new String[0]);
+                handler.insertArray("bachelorUniversities", bachelorUniversities, bachelorUniversities.length);
                 
-                Map<String, Object> masterUni = new LinkedHashMap<>();
-                masterUni.put("universities", selections.getOrDefault("master_universities", new ArrayList<>()));
-                handler.insertJsonAsMap("masterUni", masterUni);
+                // Save work experience as string array
+                List<String> workExpList = selections.getOrDefault("work_experience", new ArrayList<>());
+                String[] workExperience = workExpList.toArray(new String[0]);
+                handler.insertArray("workExperience", workExperience, workExperience.length);
                 
-                Map<String, Object> phdUni = new LinkedHashMap<>();
-                phdUni.put("universities", selections.getOrDefault("phd_universities", new ArrayList<>()));
-                handler.insertJsonAsMap("phdUni", phdUni);
+                // Save department selections as string arrays
+                // Bachelor departments
+                List<String> bachelorDeptList = selections.getOrDefault("bachelor_departments", new ArrayList<>());
+                String[] bachelorDept = bachelorDeptList.toArray(new String[0]);
+                handler.insertArray("bachelorDepartments", bachelorDept, bachelorDept.length);
                 
-                // Save department selections
-                Map<String, Object> bachelorDept = new LinkedHashMap<>();
-                bachelorDept.put("departments", selections.getOrDefault("bachelor_departments", new ArrayList<>()));
-                handler.insertJsonAsMap("bachelorDept", bachelorDept);
+                // Master departments
+                List<String> masterDeptList = selections.getOrDefault("master_departments", new ArrayList<>());
+                String[] masterDept = masterDeptList.toArray(new String[0]);
+                handler.insertArray("masterDepartments", masterDept, masterDept.length);
                 
-                Map<String, Object> masterDept = new LinkedHashMap<>();
-                masterDept.put("departments", selections.getOrDefault("master_departments", new ArrayList<>()));
-                handler.insertJsonAsMap("masterDept", masterDept);
+                // PhD departments
+                List<String> phdDeptList = selections.getOrDefault("phd_departments", new ArrayList<>());
+                String[] phdDept = phdDeptList.toArray(new String[0]);
+                handler.insertArray("phdDepartments", phdDept, phdDept.length);
                 
-                Map<String, Object> phdDept = new LinkedHashMap<>();
-                phdDept.put("departments", selections.getOrDefault("phd_departments", new ArrayList<>()));
-                handler.insertJsonAsMap("phdDept", phdDept);
-                
-                // Save degree selections
                 Map<String, Object> degrees = new LinkedHashMap<>();
                 for (Map.Entry<String, String> entry : degreeSelections.entrySet()) {
                     degrees.put(entry.getKey(), entry.getValue() != null ? entry.getValue() : "-");
                 }
                 handler.insertJsonAsMap("degrees", degrees);
-                
-                // Save work experience
-                Map<String, Object> workExp = new LinkedHashMap<>();
-                workExp.put("experience", selections.getOrDefault("work_experience", new ArrayList<>()));
-                handler.insertJsonAsMap("workExperience", workExp);
                 
                 displayAllSavedData();
                 mainFrame.dispose();
@@ -345,12 +336,16 @@ public class CustomCriteriaAppdone {
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(mainFrame, 
                     "Error saving to database: " + e.getMessage());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(mainFrame,
+                    "Error converting weights to numbers: " + e.getMessage());
             }
         } else {
             JOptionPane.showMessageDialog(mainFrame, 
                 "Please ensure all weights are valid numbers and sum to 100");
         }
     }
+    
 
 private static boolean validateWeights() {
     try {
@@ -413,7 +408,7 @@ private static void saveSelections(Map<String, Integer> weights) {
         "Premiere Pro", "Illustrator", "SPSS", "Stata", "Docker", "Google Workspace","Softone", "Epsilon", "Atlantis"};
     }
 
-    private static void displayAllSavedData() {
+    private void displayAllSavedData() {
         try {
             // Display weights
             Map<String, Object> savedWeights = handler.fetchJsonAsMap("weight");

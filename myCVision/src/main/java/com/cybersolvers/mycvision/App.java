@@ -7,6 +7,8 @@ import java.util.Scanner;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class App 
 {
@@ -14,6 +16,30 @@ public class App
     {
 
         // Κλήση μεθόδου για γραφικά 
+        CustomCriteriaApp customCriteriaApp = new CustomCriteriaApp();
+        JFrame guiFrame =customCriteriaApp.createAndShowGUI(); // Assuming it returns a JFrame
+
+        // Use a lock object to wait until the GUI is closed
+        final Object lock = new Object();
+
+        // Add a WindowListener to the JFrame to detect when it closes
+        guiFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                synchronized (lock) {
+                    lock.notify(); // Notify the waiting thread that the GUI has closed
+                }
+            }
+        });
+
+        // Wait until the GUI is closed
+        synchronized (lock) {
+            try {
+                lock.wait(); // Wait until the GUI is closed
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         //Κλήση μεθόδου για txt parsing
 
         // Κλήση μεθοδού CandidateService για την δημηιουργία τελικού πίνακα και ταξινόμιση υποψηφίων

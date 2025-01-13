@@ -12,8 +12,8 @@ import java.util.List;
 public class CVSubmissionApp2 {
 
     public static Path cvFolder;
-    
-    public static void startCVSubmissionApp() {
+
+    public static JFrame startCVSubmissionApp() {
         // Δημιουργία του κύριου frame
         JFrame frame = new JFrame("Κατάθεση Βιογραφικών");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -133,6 +133,8 @@ public class CVSubmissionApp2 {
 
         frame.add(new JScrollPane(mainPanel), BorderLayout.CENTER);
         frame.setVisible(true);
+
+        return frame; // Επιστρέφει το JFrame
     }
 
     private static void saveCVsToFolder(DefaultListModel<String> cvListModel) {

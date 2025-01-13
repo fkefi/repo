@@ -26,10 +26,10 @@ public class CandidateService  {
     Txtreader reader = new Txtreader();
 
     public CandidateService() throws SQLException {
-        this.id = handler.fetchTable("ID");
+        this.id = handler.fetchStringArray("ID");
         this.candidates = reader.toMap();
-        this.numbers = handler.fetchNestedIntegerData("allTablesData");
-        this.weight = handler.fetchTable("Weight");
+        this.numbers = handler.fetchMapFromDatabase("allTablesData");
+        this.weight = handler.fetchDouble1DArray("Weight");
         this.numberOfCandidates = candidates.size();
         this.numberOfCriteria = weight.length;
         this.points = createPoints();
@@ -45,7 +45,7 @@ public class CandidateService  {
         }
 
         Arrays.sort(finalCandidates, (a, b) -> Double.compare(b[1], a[1]));
-        handler.insertArray("finalCandidates", finalCandidates, finalCandidates.length, 2);
+        handler.insertDoubleArray("finalCandidates", finalCandidates, finalCandidates.length, 2);
         return finalCandidates;
     }
 

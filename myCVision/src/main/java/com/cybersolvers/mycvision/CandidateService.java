@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.cybersolvers.mycvision.JsonNode;
 import com.cybersolvers.mycvision.ObjectMapper;
+import com.cybersolvers.mycvision.SQLiteHandler;
 import com.cybersolvers.mycvision.Txtreader;
 
 public class CandidateService  {
@@ -63,7 +64,7 @@ public class CandidateService  {
         for (Map.Entry<String, Map<String, Object>> entry : candidates.entrySet()) {
             Map<String, Object> cand = entry.getValue();
             String fullName = (String) cand.get("fullName");
-            double uniqueId = 0.0;
+            double uniqueId = -99.0;
 
             for (String[] idRow : id) {
                 if (idRow[0].equals(fullName)) {
@@ -72,7 +73,7 @@ public class CandidateService  {
                 }
             }
 
-            if (uniqueId == 0.0) {
+            if (uniqueId == -99.0) {
                 System.out.println("Warning: No matching ID found for fullName: " + fullName);
             }
 
@@ -126,7 +127,6 @@ public class CandidateService  {
                                 !stringValue.equalsIgnoreCase("no")) {
                             matchedValuesList.add(1.0);
                         } else {
-                            System.out.println("Warning: No match found for value " + stringValue + " in category " + category);
                             matchedValuesList.add(0.0);
                         }
                     } else {
@@ -135,10 +135,20 @@ public class CandidateService  {
                 } else if (candValue instanceof Integer) {
                     matchedValuesList.add(((Integer) candValue).doubleValue());
                 } else if (category == null && candValue instanceof Double) {
-                    matchedValuesList.add((Double) candValue);
+                   double grade = (Double) candValue;
+                if (grade >= 10 ||  (grade >= 1 && grade <= 4) ) {
+                    System.out.println("Warning: Grade in field " + field + " for candidate " + cand.get("fullName") + " is " + grade + "(setting to 0)");
+                    grade = 0.0;
+                }
+                matchedValuesList.add(grade);
+                    
                 } else {
                     matchedValuesList.add(0.0);
-                }
+                } 
+            } else {
+                String fullName = (String) cand.getOrDefault("fullName", "Unknown");
+                System.out.println("Warning: No value found for field '" + field + "' in candidate '" + fullName + "'");
+                matchedValuesList.add(0.0);
             }
         }
 

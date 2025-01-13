@@ -1,7 +1,12 @@
-package test.java.com.cybersolvers;
+package com.cybersolvers.mycvision;
 
+import static org.mockito.Mockito.doNothing;
+
+import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.mockito.Mockito;
 
 class TestCandidateService {
 
@@ -10,7 +15,7 @@ class TestCandidateService {
     private Txtreader mockReader;
 
     @Before
-    public void setUp() {
+    public void setUp() throws SQLException {
         candidateService = new CandidateService();
         mockHandler = Mockito.mock(SQLiteHandler.class);
         mockReader = Mockito.mock(Txtreader.class);

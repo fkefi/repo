@@ -21,6 +21,10 @@ public class SQLiteHandler {
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(createTableQuery);
         }
+        String deleteQuery = "DELETE FROM " + tableName + ";";
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute(deleteQuery);
+        }
 
         String insertQuery = "INSERT INTO " + tableName + " (indx, value) VALUES (?, ?);";
         try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
@@ -111,11 +115,7 @@ public class SQLiteHandler {
         }
     }
     
-        
-
-    
-
-    // Method 7 : Insert a nested Map with Integer values into the database
+    // Method : Insert a nested Map with Integer values into the database
     public void insertNestedIntegerData(String tableName, Map<String, Map<String, Integer>> nestedMap) throws SQLException {
     String createTableQuery = "CREATE TABLE IF NOT EXISTS " + tableName + " (outer_key TEXT, inner_key TEXT, int_value INTEGER);";
     try (Statement stmt = connection.createStatement()) {
@@ -181,10 +181,12 @@ public double[][] fetchDoubleArray(String tableName) throws SQLException {
     }
 }
    
-    // Method: Fetch a double[] from the database
 public double[] fetchDouble1DArray(String tableName) throws SQLException {
-    String query = "SELECT * FROM " + tableName + " ORDER BY row_index";
-    try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+    // Simple query without ORDER BY if row_index doesn't exist
+    String query = "SELECT value FROM " + tableName;
+    
+    try (Statement stmt = connection.createStatement();
+         ResultSet rs = stmt.executeQuery(query)) {
         List<Double> values = new ArrayList<>();
         while (rs.next()) {
             values.add(rs.getDouble("value"));
@@ -257,7 +259,25 @@ public void insertDoubleArray(String tableName, double[][] array) throws SQLExce
         }
     }
 }
-
+public String[] fetchTableAsStringArray(String tableName) {
+    List<String> results = new ArrayList<>();
+    String query = "SELECT * FROM " + tableName;
+    
+    try (
+         Statement stmt = connection.createStatement();
+         ResultSet rs = stmt.executeQuery(query)) {
+        
+        while (rs.next()) {
+            // Assuming the value we want is in the first column
+            results.add(rs.getString(1));
+        }
+        
+        return results.toArray(new String[0]);
+    } catch (SQLException e) {
+        System.err.println("Error fetching data from " + tableName + ": " + e.getMessage());
+        return new String[0]; // Return empty array instead of null
+    }
+}
 
 
 

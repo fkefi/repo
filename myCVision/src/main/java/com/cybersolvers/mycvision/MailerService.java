@@ -1,24 +1,35 @@
 package com.cybersolvers.mycvision;
 
-import com.sendgrid.*;
-import com.sendgrid.helpers.mail.Mail;
-import com.sendgrid.helpers.mail.objects.Email;
-import com.sendgrid.helpers.mail.objects.Content;
-
 import java.io.IOException;
-import java.sql.*;
+import java.net.URL;
+import java.sql.SQLException;
+
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
 
 public class MailerService {
     double[][] finalCandidates;
 
     // Φορτώνουμε το API Key 
     private static final String SENDGRID_API_KEY = "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";
+    URL resource = ResumeService.class.getClassLoader().getResource("my_database.db");
+    String dbPath = resource.getPath();
+    String dbUrl = "jdbc:sqlite:" + dbPath;
+    private final SQLiteHandler sqliteHandler;
+    public MailerService() throws SQLException {
+        this.sqliteHandler = new SQLiteHandler(dbUrl);
+    }
 
     // Μέθοδος για να στείλουμε το email με τα finalCandidates από τη βάση δεδομένων
     public void sendEmail(String recipientEmail) throws SQLException {
         // Εδώ χρησιμοποιούμε την μέθοδο fetchDoubleArray από την κλάση SQLiteHandler για να πάρουμε τα δεδομένα
-        String dbUrl = "C:\\cygwin64\\home\\efifk\\repo\\myCVision\\src\\main\\resources";
-        SQLiteHandler sqliteHandler = new SQLiteHandler(dbUrl);
+        
+        
         String tableName = "finalCandidates";  // Όνομα του πίνακα
         this.finalCandidates = sqliteHandler.fetchDoubleArray(tableName);  // Φορτώνουμε τα δεδομένα
 
@@ -59,9 +70,9 @@ public class MailerService {
 
                 // Αποστολή του email
                 Response response = sendGrid.api(request);
-                System.out.println("Status Code: " + response.getStatusCode());
+                /*System.out.println("Status Code: " + response.getStatusCode());
                 System.out.println("Response Body: " + response.getBody());
-                System.out.println("Response Headers: " + response.getHeaders());
+                System.out.println("Response Headers: " + response.getHeaders());*/
             } catch (IOException ex) {
                 System.err.println("Error sending email: " + ex.getMessage());
             }

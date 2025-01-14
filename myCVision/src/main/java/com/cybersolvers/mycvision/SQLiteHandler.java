@@ -16,13 +16,13 @@ public class SQLiteHandler {
     public void insert1DStringArray(String tableName, String[] array) throws SQLException {
         
         String createTableQuery = "CREATE TABLE IF NOT EXISTS " + tableName +
-                " (index INTEGER PRIMARY KEY, value TEXT);";
+                " (indx INTEGER PRIMARY KEY, value TEXT);";
 
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(createTableQuery);
         }
 
-        String insertQuery = "INSERT INTO " + tableName + " (index, value) VALUES (?, ?);";
+        String insertQuery = "INSERT INTO " + tableName + " (indx, value) VALUES (?, ?);";
         try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
             for (int i = 0; i < array.length; i++) {
                 pstmt.setInt(1, i);           

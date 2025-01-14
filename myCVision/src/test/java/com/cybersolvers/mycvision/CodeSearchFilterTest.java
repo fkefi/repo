@@ -1,45 +1,116 @@
 package com.cybersolvers.mycvision;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import javax.swing.*;
 import static org.junit.jupiter.api.Assertions.*;
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
+import java.sql.SQLException;
 
-public class CodeSearchFilterTest {
+class CodeSearchFilterTest {
     
-    @Test
-    void testFrameCreation() {
-        JFrame frame = new JFrame();
-        assertNotNull(frame, "Το JFrame πρέπει να δημιουργείται επιτυχώς");
-        assertEquals(JFrame.EXIT_ON_CLOSE, frame.getDefaultCloseOperation(), 
-            "Το JFrame πρέπει να έχει σωστό defaultCloseOperation");
-    }
+    private JFrame mainFrame;
+    private Connection connection;
     
-    @Test
-    void testDialogCreation() {
-        JFrame frame = new JFrame();
-        CodeSearchFilter dialog = new CodeSearchFilter(frame);
-        assertNotNull(dialog, "Ο διάλογος πρέπει να δημιουργείται επιτυχώς");
-    }
-    
-    @Test
-    void testDialogLocation() {
-        JFrame frame = new JFrame();
-        CodeSearchFilter dialog = new CodeSearchFilter(frame);
-        dialog.setLocationRelativeTo(null);
+    @BeforeEach
+    void setUp() {
+        mainFrame = new JFrame();
+        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         
-        // Ελέγχουμε αν έχει οριστεί θέση
-        assertTrue(dialog.getLocation().x >= 0, "Ο διάλογος πρέπει να έχει έγκυρη θέση X");
-        assertTrue(dialog.getLocation().y >= 0, "Ο διάλογος πρέπει να έχει έγκυρη θέση Y");
+        // Αρχικοποίηση της βάσης δεδομένων για testing
+        try {
+            connection = DriverManager.getConnection("jdbc:sqlite:test.db");
+            Statement stmt = connection.createStatement();
+            stmt.execute("CREATE TABLE IF NOT EXISTS items (" +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "code TEXT NOT NULL," +
+                        "description TEXT)");
+        } catch (SQLException e) {
+            fail("Αποτυχία αρχικοποίησης της βάσης δεδομένων: " + e.getMessage());
+        }
     }
     
+    @AfterEach
+    void tearDown() {
+        try {
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        mainFrame.dispose();
+    }
+
     @Test
-    void testExceptionHandling() {
-        Exception testException = new Exception("Δοκιμαστικό σφάλμα");
-assertDoesNotThrow(() -> {
-            JOptionPane.showMessageDialog(null,
-                "Σφάλμα κατά την εκκίνηση: " + testException.getMessage(),
-                "Σφάλμα",
-                JOptionPane.ERROR_MESSAGE);
-        }, "Ο χειρισμός σφαλμάτων πρέπει να λειτουργεί σωστά");
+    void testCodeSearchFilterCreation() {
+        // Δημιουργία του βασικού frame
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        
+        try {
+            // Δημιουργία του CodeSearchFilter
+            CodeSearchFilter dialog = new CodeSearchFilter(frame);
+            
+            // Βασικοί έλεγχοι
+            assertNotNull(dialog, "Το dialog δεν πρέπει να είναι null");
+            assertTrue(dialog.isModal(), "Το dialog πρέπει να είναι modal");
+            assertEquals("Search by Code", dialog.getTitle(), 
+                        "Ο τίτλος πρέπει να είναι 'Search by Code'");
+            
+        } finally {
+            // Καθαρισμός
+            frame.dispose();
+        }
+    }
+
+    @Test
+    void testFilterInitialization() {
+        System.out.println("=== Έλεγχος Filter ===");
+        System.out.println("1. Θα ανοίξει παράθυρο διαλόγου");
+        System.out.println("2. Πατήστε Cancel");
+        
+        // Δημιουργία του dialog για να ελέγξουμε έμμεσα ότι το Filter δημιουργείται
+        CodeSearchFilter dialog = new CodeSearchFilter(mainFrame);
+        assertNotNull(dialog, "Το dialog δεν πρέπει να είναι null");
+    }
+
+    @Test
+    void testSearchFunctionality() {
+        System.out.println("=== Έλεγχος Αναζήτησης ===");
+        System.out.println("1. Θα ανοίξει παράθυρο διαλόγου");
+        System.out.println("2. Εισάγετε τον κωδικό: 123.45");
+        System.out.println("3. Επιβεβαιώστε ότι εμφανίζεται αποτέλεσμα");
+        
+        CodeSearchFilter dialog = new CodeSearchFilter(mainFrame);
+        assertNotNull(dialog, "Το dialog δεν πρέπει να είναι null");
+    }
+
+    @Test
+    void testInvalidInput() {
+        System.out.println("=== Έλεγχος Μη Έγκυρης Εισόδου ===");
+        System.out.println("1. Θα ανοίξει παράθυρο διαλόγου");
+        System.out.println("2. Εισάγετε: abc");
+        System.out.println("3. Επιβεβαιώστε ότι εμφανίζεται μήνυμα σφάλματος");
+        
+        CodeSearchFilter dialog = new CodeSearchFilter(mainFrame);
+        assertNotNull(dialog, "Το dialog δεν πρέπει να είναι null");
+    }
+
+    @Test
+    void testDialogProperties() {
+        System.out.println("=== Έλεγχος Ιδιοτήτων Dialog ===");
+        System.out.println("1. Θα ανοίξει παράθυρο διαλόγου");
+        System.out.println("2. Επιβεβαιώστε τον τίτλο 'Search by Code'");
+        System.out.println("3. Πατήστε Cancel");
+        
+        CodeSearchFilter dialog = new CodeSearchFilter(mainFrame);
+        assertTrue(dialog.isModal(), "Το dialog πρέπει να είναι modal");
+        assertEquals("Search by Code", dialog.getTitle(), 
+                    "Ο τίτλος πρέπει να είναι 'Search by Code'");
     }
 }

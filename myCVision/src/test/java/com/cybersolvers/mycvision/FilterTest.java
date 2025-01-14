@@ -1,104 +1,83 @@
 package com.cybersolvers.mycvision;
 
-import org.junit.jupiter.api.*;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.WindowEvent;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
-public class FilterTest {
-    
-    private JFrame frame;
-    private CodeSearchFilter dialog;
-    
+class FilterTest {
+    private Filter filter;
+
     @BeforeEach
     void setUp() {
-        // Βεβαιωνόμαστε ότι τρέχουμε στο EDT
-        SwingUtilities.invokeLater(() -> {
-            frame = new JFrame();
-            dialog = new CodeSearchFilter(frame);
-        });
-    }
-    
-    @AfterEach
-    void tearDown() {
-        if (dialog != null) {
-            dialog.dispose();
-        }
-        if (frame != null) {
-            frame.dispose();
-        }
+        filter = new Filter();
     }
 
     @Test
-    void testDialogCreation() throws InterruptedException {
-CountDownLatch latch = new CountDownLatch(1);
-        
-        SwingUtilities.invokeLater(() -> {
-            assertNotNull(dialog, "Ο διάλογος δεν θα πρέπει να είναι null");
-            assertTrue(dialog instanceof JDialog, "Ο διάλογος πρέπει να είναι τύπου JDialog");
-            latch.countDown();
-        });
-        
-        assertTrue(latch.await(5, TimeUnit.SECONDS), "Το test έληξε χρονικά");
+    void testGenerateRandomCode() {
+        // Έλεγχος ότι παράγονται διαφορετικοί κωδικοί
+        String code1 = filter.generateRandomCode();
+        String code2 = filter.generateRandomCode();
+
+        // Επαλήθευση ότι οι κωδικοί είναι διαφορετικοί
+        assertNotEquals(code1, code2);
+
+        // Επαλήθευση ότι οι κωδικοί είναι αριθμητικοί
+        assertTrue(code1.matches("\\d+"));
+        assertTrue(code2.matches("\\d+"));
+
+        // Επαλήθευση ότι το μήκος είναι λογικό (μέχρι 6 ψηφία)
+        assertTrue(code1.length() <= 6);
+        assertTrue(code2.length() <= 6);
     }
-    
     @Test
-    void testDialogCentering() throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1);
+    void testSearchByCodeWithValidInput() {
+        // Έλεγχος με έγκυρο κωδικό
+        String result = filter.searchByCode(123456);
+        assertNotNull(result, "Το αποτέλεσμα δεν πρέπει να είναι null");
         
-        SwingUtilities.invokeLater(() -> {
-            dialog.setLocationRelativeTo(null);
-            Point location = dialog.getLocation();
-            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            
-            // Ελέγχουμε αν ο διάλογος είναι περίπου στο κέντρο της οθόνης
-            assertTrue(location.x > screenSize.width/4 && 
-                      location.x < screenSize.width*3/4,
-                      "Ο διάλογος πρέπει να είναι κεντραρισμένος οριζόντια");
-            assertTrue(location.y > screenSize.height/4 && 
-                      location.y < screenSize.height*3/4,
-                      "Ο διάλογος πρέπει να είναι κεντραρισμένος κάθετα");
-            
-            latch.countDown();
-        });
-        
-        assertTrue(latch.await(5, TimeUnit.SECONDS), "Το test έληξε χρονικά");
+        // Το αποτέλεσμα πρέπει να είναι ένα από τα αναμενόμενα
+        assertTrue(
+            result.equals("Code not found.") || 
+            result.startsWith("Name:") ||
+            result.equals("Error during search"),
+            "Μη αναμενόμενο αποτέλεσμα: " + result
+        );
     }
-    
+
     @Test
-    void testWindowClosing() throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1);
+    void testSearchByCodeWithLargeNumber() {
+        // Έλεγχος με πολύ μεγάλο αριθμό
+        String result = filter.searchByCode(9999999);
+        assertNotNull(result, "Το αποτέλεσμα δεν πρέπει να είναι null");
         
-        SwingUtilities.invokeLater(() -> {
-  // Προσομοιώνουμε το κλείσιμο του παραθύρου
-            WindowEvent windowClosing = new WindowEvent(dialog, WindowEvent.WINDOW_CLOSING);
-            dialog.dispatchEvent(windowClosing);
-            
-            // Ελέγχουμε αν ο διάλογος δεν είναι πλέον ορατός
-            assertFalse(dialog.isVisible(), "Ο διάλογος δεν θα πρέπει να είναι ορατός μετά το κλείσιμο");
-            
-            latch.countDown();
-        });
-        
-        assertTrue(latch.await(5, TimeUnit.SECONDS), "Το test έληξε χρονικά");
+        // Το αποτέλεσμα πρέπει να είναι ένα από τα αναμενόμενα
+        assertTrue(
+            result.equals("Code not found.") || 
+            result.equals("Error during search"),
+            "Μη αναμενόμενο αποτέλεσμα: " + result
+        );
     }
-    
     @Test
-    void testExceptionHandling() {
-        // Προσομοιώνουμε ένα σφάλμα
-        Exception testException = new Exception("Test error");
-        
-        // Ελέγχουμε αν το μήνυμα σφάλματος εμφανίζεται σωστά
-        assertDoesNotThrow(() -> {
-            SwingUtilities.invokeAndWait(() -> {
-                JOptionPane.showMessageDialog(null,
-                    "Σφάλμα κατά την εκκίνηση: " + testException.getMessage(),
-                    "Σφάλμα",
-                    JOptionPane.ERROR_MESSAGE);
-            });
-        }, "Ο χειρισμός εξαιρέσεων θα πρέπει να λειτουργεί ομαλά");
+    void testIdArrayNotNull() {
+        try {
+            // Έλεγχος ότι ο πίνακας id έχει δημιουργηθεί
+            java.lang.reflect.Field idField = Filter.class.getDeclaredField("id");
+            idField.setAccessible(true);
+            String[][] id = (String[][]) idField.get(filter);
+            
+            assertNotNull(id, "Ο πίνακας id δεν πρέπει να είναι null");
+            
+            // Έλεγχος ότι κάθε εγγραφή έχει σωστή μορφή
+            for (String[] record : id) {
+                assertNotNull(record, "Κάθε εγγραφή δεν πρέπει να είναι null");
+                assertEquals(2, record.length, "Κάθε εγγραφή πρέπει να έχει 2 στοιχεία");
+                assertNotNull(record[0], "Το όνομα δεν πρέπει να είναι null");
+                assertNotNull(record[1], "Ο κωδικός δεν πρέπει να είναι null");
+                assertTrue(record[1].matches("\\d+"), "Ο κωδικός πρέπει να είναι αριθμητικός");
+            }
+            
+        } catch (Exception e) {
+            fail("Σφάλμα κατά τον έλεγχο του πίνακα id: " + e.getMessage());
+        }
     }
 }

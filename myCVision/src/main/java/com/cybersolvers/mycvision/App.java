@@ -43,7 +43,7 @@ public class App
         }
 
         //Κλήση μεθόδου για κατάθεση βιογραφικών
-        JFrame cvGuiFrame = CVSubmissionApp2.startCVSubmissionApp();
+        JFrame cvGuiFrame = CVSubmissionApp.startCVSubmissionApp();
 
         cvGuiFrame.addWindowListener(new WindowAdapter() {
             @Override

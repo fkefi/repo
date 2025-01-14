@@ -2,7 +2,12 @@ package com.cybersolvers.mycvision;
 import java.io.BufferedWriter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -37,16 +42,17 @@ public class Txtreader {
     private String officeSkills;
     private String programmingLanguage;
     private static int candidateCounter = 0;
+    Map<String, Map<String, Object>> allCandidates = new LinkedHashMap<>();
 
     public void processFiles() {
-        Map<String, Map<String, Object>> allCandidates = new LinkedHashMap<>();
-        String directoryPath = CVSubmissionApp2.getCVPath().toString();
+        //Map<String, Map<String, Object>> allCandidates = new LinkedHashMap<>();
+        Path directoryPath = CVSubmissionApp2.cvFolder;
         String outputFilePath = "E:\\myCVision\\mycv\\src\\resources\\cv\\output.json";
         
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         
         try (BufferedWriter writer = Files.newBufferedWriter(Path.of(outputFilePath))) {
-            List<Path> files = Files.list(Path.of(directoryPath))
+            List<Path> files = Files.list(directoryPath)
                     .filter(filePath -> filePath.toString().endsWith(".txt"))
                     .collect(Collectors.toList());
 
@@ -132,7 +138,7 @@ public class Txtreader {
                             case "Office Skills (Excellent/Very Good/Good/No)":
                                 this.officeSkills = value;
                                 break;
-                            case "Programming Skills (Excellent/Very Good/Good/No)":
+                            case "Programming Skills (Yes/No)":
                                 this.programmingLanguage = value;
                                 break;    
                         }
@@ -210,17 +216,31 @@ public class Txtreader {
         return candidates;
     }
 
-    public List<String> getFullNames() {
-        List<String> names = new ArrayList<>();
-        Map<String, Map<String, Object>> candidatesData = toMap();
+public List<String> getFullNames() {
+    List<String> names = new ArrayList<>();
+    String outputFilePath = "E:\\myCVision\\mycv\\src\\resources\\cv\\output.json";
     
+    try {
+        // Διάβασε το JSON αρχείο
+        String jsonContent = Files.readString(Path.of(outputFilePath), StandardCharsets.UTF_8);
+        Gson gson = new Gson();
+        
+        // Μετατροπή JSON σε Map
+        Type type = new TypeToken<Map<String, Map<String, Object>>>(){}.getType();
+        Map<String, Map<String, Object>> candidatesData = gson.fromJson(jsonContent, type);
+        
+        // Εξαγωγή των ονομάτων
         for (Map.Entry<String, Map<String, Object>> entry : candidatesData.entrySet()) {
             String fullName = (String) entry.getValue().get("fullName");
-            if (fullName != null) {
+            if (fullName != null && !fullName.trim().isEmpty()) {
                 names.add(fullName);
             }
         }
-    
-        return names;
+    } catch (IOException e) {
+        System.err.println("Σφάλμα κατά την ανάγνωση του αρχείου JSON: " + e.getMessage());
+        e.printStackTrace();
     }
+    
+    return names;
+}
 }   

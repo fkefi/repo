@@ -9,8 +9,8 @@ import java.util.Map;
 public class ResumeService {
     public final String[] levels = {"TELEIA", "POLY KALA", "KALA", "OXI"};
     public final String[] workExperience = {"0", "1", "2", "3", "4", "5", "6"};
-
-    URL resource = ResumeService.class.getClassLoader().getResource("mydatabase.db");
+    public final String[] yesNo = {"Yes", "No"};
+    URL resource = ResumeService.class.getClassLoader().getResource("my_database.db");
     String dbPath = resource.getPath();
     String dbUrl = "jdbc:sqlite:" + dbPath;
 
@@ -30,10 +30,10 @@ public class ResumeService {
         this.sqlitehandler = new SQLiteHandler(dbUrl);
         
         // Initialize database values
-        this.universities = (String[]) sqlitehandler.fetchTable("universities");
-        this.bachelorDept = (String[]) sqlitehandler.fetchTable("bachelorDept");
-        this.masterDept = (String[]) sqlitehandler.fetchTable("masterDept");
-        this.phDDept = (String[]) sqlitehandler.fetchTable("phDDept");
+        this.universities =  sqlitehandler.fetchTableAsStringArray("universities");
+        this.bachelorDept =  sqlitehandler.fetchTableAsStringArray("bachelorDept");
+        this.masterDept =  sqlitehandler.fetchTableAsStringArray("masterDept");
+        this.phDDept =  sqlitehandler.fetchTableAsStringArray("phDDept");
         
         // Initialize lists
         this.arrays = new ArrayList<>();
@@ -46,7 +46,7 @@ public class ResumeService {
         arrays.add(bachelorDept);
         arrays.add(masterDept);
         arrays.add(phDDept);
-        
+        arrays.add(yesNo);
         // Add items to tableNames
         tableNames.add("universities");
         tableNames.add("levels");
@@ -54,7 +54,7 @@ public class ResumeService {
         tableNames.add("bachelorDept");
         tableNames.add("masterDept");
         tableNames.add("phDDept");
-
+        tableNames.add("yesNo");
     }
     
     // Μέθοδος για την αξιολόγηση των κριτηρίων
@@ -90,13 +90,17 @@ public class ResumeService {
             "degreeDept".equals(tableName) || 
             "masterDept".equals(tableName) || 
             "phDDept".equals(tableName)) {
-
+            
             scores.put("asxeto", 1);
             scores.put("den exei spoudasei", 0);
         }
         
         if ("workExperience".equals(tableName)) {
             scores.put("more years", 9);
+        }
+        if ("yesNo".equals(tableName)) {
+            scores.put("Yes", 1);
+            scores.put("No", 0);
         }
         
         return scores;

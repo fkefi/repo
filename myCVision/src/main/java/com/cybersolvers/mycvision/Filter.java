@@ -33,14 +33,14 @@ public class Filter {
         Set<String> existingCodes = new HashSet<>();
         
         // Πρώτα ελέγχουμε τους υπάρχοντες κωδικούς στη βάση δεδομένων
-        String[][] existingData = dbHandler.fetchStringArray("id");
+        /*String[][] existingData = dbHandler.fetchStringArray("id");
         if (existingData != null) {
             for (String[] row : existingData) {
                 if (row.length > 1) {
                     existingCodes.add(row[1]);
                 }
             }
-        }
+        }*/
                 // Προσθέτουμε τους υπάρχοντες κωδικούς στο usedCodes
                 usedCodes.addAll(existingCodes);
         

@@ -35,20 +35,26 @@ public class SQLiteHandler {
 
     // method to insert a double 1D array into the database
     public void insert1DdoubleArray(String tableName, double[] array) throws SQLException {
-        
+        // Create the table if it doesn't already exist
         String createTableQuery = "CREATE TABLE IF NOT EXISTS " + tableName +
-                " (indx INTEGER PRIMARY KEY, value REAL);";
-
+                " (idx INTEGER PRIMARY KEY, value REAL);";
+    
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(createTableQuery);
         }
-
-        
-        String insertQuery = "INSERT INTO " + tableName + " (indx, value) VALUES (?, ?);";
+    
+        // Clear the table before inserting new data
+        String deleteQuery = "DELETE FROM " + tableName + ";";
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute(deleteQuery);
+        }
+    
+        // Insert the new array values
+        String insertQuery = "INSERT INTO " + tableName + " (idx, value) VALUES (?, ?);";
         try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
             for (int i = 0; i < array.length; i++) {
-                pstmt.setInt(1, i);           
-                pstmt.setDouble(2, array[i]); 
+                pstmt.setInt(1, i);           // idx column
+                pstmt.setDouble(2, array[i]); // value column
                 pstmt.executeUpdate();
             }
         }

@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.List;
 
-public class CVSubmissionApp2 {
+public class CVSubmissionApp {
 
     public static Path cvFolder;
 

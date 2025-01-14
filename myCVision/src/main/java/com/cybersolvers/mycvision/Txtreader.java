@@ -46,7 +46,7 @@ public class Txtreader {
 
     public void processFiles() {
         //Map<String, Map<String, Object>> allCandidates = new LinkedHashMap<>();
-        Path directoryPath = CVSubmissionApp2.cvFolder;
+        Path directoryPath = CVSubmissionApp.cvFolder;
         String outputFilePath = "E:\\myCVision\\mycv\\src\\resources\\cv\\output.json";
         
         Gson gson = new GsonBuilder().setPrettyPrinting().create();

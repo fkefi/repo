@@ -90,7 +90,7 @@ public class ResumeService {
             "degreeDept".equals(tableName) || 
             "masterDept".equals(tableName) || 
             "phDDept".equals(tableName)) {
-            
+
             scores.put("asxeto", 1);
             scores.put("den exei spoudasei", 0);
         }

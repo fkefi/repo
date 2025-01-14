@@ -1,15 +1,15 @@
 package com.cybersolvers.mycvision;
 
 
-import com.cybersolvers.mycvision.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 public class App 
 {
@@ -102,12 +102,22 @@ public class App
                 System.exit(1);
             }
         });
+
+
+        
+        /*klhsh ResumeService */
+        ResumeService resumeservice = new ResumeService();
+        @SuppressWarnings("unused")
+        Map<String, Map<String, Integer>> result = resumeservice.evaluateMultipleTablesToJson();
+
+
+
         // Κλήση μεθόδου MailerService για αποστολή των αποτελεσμάτων στην εταιρία
         System.out.print("Enter recipient email: ");
         String recipientEmail = scanner.nextLine(); // Εισαγωγή email από τον χρήστη
 
         MailerService mailerService = new MailerService();
-        mailerService.sendEmail("recipientEmail");
+        mailerService.sendEmail(recipientEmail);
         
     }
 }

@@ -125,7 +125,4 @@ public class ResumeService {
         return allTablesData;
     }
 
-    @SuppressWarnings("unused")
-    Map<String, Map<String, Integer>> result = evaluateMultipleTablesToJson();
-
 }

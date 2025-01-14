@@ -3,8 +3,6 @@ import java.net.URL;
 import java.sql.*;
 import java.util.*;
 
-import com.cybersolvers.mycvision.SQLiteHandler;
-
 public class CandidateService  {
     protected String[][] id;
     protected Map<String, Map<String, Object>> candidates;
@@ -14,7 +12,7 @@ public class CandidateService  {
     protected int numberOfCriteria;
     protected double[][] points;
     protected String jsonFilePath = "E:\\myCVision\\mycv\\src\\resources\\cv\\output.json"; 
-    URL resource = CandidateService.class.getClassLoader().getResource("mydatabase.db");
+    URL resource = CandidateService.class.getClassLoader().getResource("my_database.db");
     String dbPath = resource.getPath();
     String dbUrl = "jdbc:sqlite:" + dbPath;
 

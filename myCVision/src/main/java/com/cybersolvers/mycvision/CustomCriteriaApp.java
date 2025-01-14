@@ -291,12 +291,12 @@ public class CustomCriteriaApp {
         if (validateWeights()) {
             try {
                 // Save weights as double array
-                double[] weights = new double[WEIGHT_CRITERIA.length];
+                double[] Weight = new double[WEIGHT_CRITERIA.length];
                 for (int i = 0; i < WEIGHT_CRITERIA.length; i++) {
                     String weightText = weightFields.get(WEIGHT_CRITERIA[i]).getText().trim();
-                    weights[i] = Double.parseDouble(weightText);
+                    Weight[i] = Double.parseDouble(weightText);
                 }
-                handler.insert1DdoubleArray("weights", weights);
+                handler.insert1DdoubleArray("Weight", Weight);
                 
                 // Save bachelor universities as string array
                 List<String> bachelorUniList = selections.getOrDefault("bachelor_universities", new ArrayList<>());
@@ -312,17 +312,17 @@ public class CustomCriteriaApp {
                 // Bachelor departments
                 List<String> bachelorDeptList = selections.getOrDefault("bachelor_departments", new ArrayList<>());
                 String[] bachelorDept = bachelorDeptList.toArray(new String[0]);
-                handler.insert1DStringArray("bachelorDepartments", bachelorDept);
+                handler.insert1DStringArray("bachelorDept", bachelorDept);
                 
                 // Master departments
                 List<String> masterDeptList = selections.getOrDefault("master_departments", new ArrayList<>());
                 String[] masterDept = masterDeptList.toArray(new String[0]);
-                handler.insert1DStringArray("masterDepartments", masterDept);
+                handler.insert1DStringArray("masterDept", masterDept);
                 
                 // PhD departments
                 List<String> phdDeptList = selections.getOrDefault("phd_departments", new ArrayList<>());
                 String[] phdDept = phdDeptList.toArray(new String[0]);
-                handler.insert1DStringArray("phdDepartments", phdDept);
+                handler.insert1DStringArray("phdDept", phdDept);
                 
                 // Save degrees 
                 List<String> degreeList = selections.getOrDefault("degrees", new ArrayList<>());

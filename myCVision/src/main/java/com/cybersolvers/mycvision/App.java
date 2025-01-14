@@ -65,9 +65,18 @@ public class App
 
 
         //Κλήση μεθόδου για txt parsing
-        Txtreader reader = new Txtreader();
-        reader.processFiles();
+        /*Txtreader reader = new Txtreader();
+        reader.processFiles();*/
+
+        Filter filter = new Filter();
+        filter.processCandidates();
         // Κλήση μεθοδού CandidateService για την δημηιουργία τελικού πίνακα και ταξινόμιση υποψηφίων
+
+        ResumeService resumeservice = new ResumeService();
+        @SuppressWarnings("unused")
+        Map<String, Map<String, Integer>> result = resumeservice.evaluateMultipleTablesToJson();
+
+
         CandidateService service = new CandidateService();
         double[][] results = service.reviewCandidates();
 
@@ -76,13 +85,13 @@ public class App
             System.out.println("Candidate ID: " + candidate[0] + ", Score: " + candidate[1]);
         }
         Scanner scanner = new Scanner(System.in);
-        SwingUtilities.invokeLater(() -> {
+        /*SwingUtilities.invokeLater(() -> {
             try {
                 JFrame frame = new JFrame();
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 
                 CodeSearchFilter dialog = new CodeSearchFilter(frame);
-                dialog.setLocationRelativeTo(null); 
+                dialog.setLocationRelativeTo(null);
                 
                 // Όταν κλείσει ο διάλογος, τερματίζουμε την εφαρμογή
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -101,14 +110,14 @@ public class App
                     JOptionPane.ERROR_MESSAGE);
                 System.exit(1);
             }
-        });
+        });*/
 
 
         
         /*klhsh ResumeService */
-        ResumeService resumeservice = new ResumeService();
+        /*ResumeService resumeservice = new ResumeService();
         @SuppressWarnings("unused")
-        Map<String, Map<String, Integer>> result = resumeservice.evaluateMultipleTablesToJson();
+        Map<String, Map<String, Integer>> result = resumeservice.evaluateMultipleTablesToJson();*/
 
 
 
@@ -118,6 +127,36 @@ public class App
 
         MailerService mailerService = new MailerService();
         mailerService.sendEmail(recipientEmail);
-        
+        System.out.println("Email sent successfully!");
+        System.out.println("Want to search for a candidate by code? (yes/no)");
+        String searchChoice = scanner.nextLine();
+        if (searchChoice.equalsIgnoreCase("yes")) {
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    JFrame frame = new JFrame();
+                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    
+                    CodeSearchFilter dialog = new CodeSearchFilter(frame);
+                    dialog.setLocationRelativeTo(null);
+                    
+                    // Όταν κλείσει ο διάλογος, τερματίζουμε την εφαρμογή
+                    dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                        @Override
+                        public void windowClosed(java.awt.event.WindowEvent e) {
+                            System.exit(0);
+                        }
+                    });
+                    
+                    dialog.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null,
+                        "Σφάλμα κατά την εκκίνηση: " + e.getMessage(),
+                        "Σφάλμα",
+                        JOptionPane.ERROR_MESSAGE);
+                    System.exit(1);
+                }
+            });
+        }
     }
 }

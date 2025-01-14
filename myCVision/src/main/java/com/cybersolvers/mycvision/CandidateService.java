@@ -3,6 +3,8 @@ import java.net.URL;
 import java.sql.*;
 import java.util.*;
 
+import com.cybersolvers.mycvision.SQLiteHandler;
+
 public class CandidateService  {
     protected String[][] id;
     protected Map<String, Map<String, Object>> candidates;
@@ -22,13 +24,15 @@ public class CandidateService  {
     public CandidateService() throws SQLException {
         this.handler = new SQLiteHandler(dbUrl);
         this.reader = new Txtreader();
-        this.id = handler.fetchStringArray("ID");
-        this.candidates = reader.toMap();
+        this.id = handler.fetchStringArray("id");
+        reader.processFiles();
+        this.candidates = reader.allCandidates;
         this.numbers = handler.fetchMapFromDatabase("allTablesData");
         this.weight = handler.fetchDouble1DArray("Weight");
         this.numberOfCandidates = candidates.size();
         this.numberOfCriteria = weight.length;
         this.points = createPoints();
+        //System.out.println("CandidateService initialized:" + candidates + numberOfCandidates);
     }
 
     public double[][] reviewCandidates() throws SQLException {
@@ -48,6 +52,7 @@ public class CandidateService  {
     protected double calculateScore(int i) {
         double score = 0.0;
         for (int j = 1; j < points[i].length; j++) {
+            //System.out.println("Point[" + j + "]: " + points[i][j] + ", Weight[" + (j-1) + "]: " + weight[j-1]);
             score += points[i][j] * weight[j - 1];
         }
         return score;

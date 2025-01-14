@@ -14,6 +14,7 @@ public class CVSubmissionApp2 {
     public static Path cvFolder;
 
     public static JFrame startCVSubmissionApp() {
+        initializeCVFolder();
         // Δημιουργία του κύριου frame
         JFrame frame = new JFrame("Κατάθεση Βιογραφικών");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -119,17 +120,26 @@ public class CVSubmissionApp2 {
         JButton finishButton = new JButton("Τέλος");
         gbc.gridx = 1;
         mainPanel.add(finishButton, gbc);
-
-        finishButton.addActionListener(e -> {
-            if (cvListModel.isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "Δεν έχετε εισάγει βιογραφικά.", "Προσοχή", JOptionPane.WARNING_MESSAGE);
-            } else {
-                // Αποθήκευση βιογραφικών στον φάκελο
-                saveCVsToFolder(cvListModel);
-                JOptionPane.showMessageDialog(frame, "Τα βιογραφικά κατατέθηκαν επιτυχώς!", "Επιτυχία", JOptionPane.INFORMATION_MESSAGE);
-                cvListModel.clear();
-            }
-        });
+            finishButton.addActionListener(e -> {
+                if (cvListModel.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "Δεν έχετε εισάγει βιογραφικά.", "Προσοχή", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    try {
+                        // Save CVs and process them
+                        saveCVsToFolder(cvListModel);
+                    
+                        
+                        JOptionPane.showMessageDialog(frame, "Τα βιογραφικά κατατέθηκαν και επεξεργάστηκαν επιτυχώς!", "Επιτυχία", JOptionPane.INFORMATION_MESSAGE);
+                        cvListModel.clear();
+                        frame.dispose();
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(frame, 
+                            "Σφάλμα κατά την επεξεργασία των βιογραφικών: " + ex.getMessage(), 
+                            "Σφάλμα", 
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            });
 
         frame.add(new JScrollPane(mainPanel), BorderLayout.CENTER);
         frame.setVisible(true);
@@ -137,40 +147,36 @@ public class CVSubmissionApp2 {
         return frame; // Επιστρέφει το JFrame
     }
 
-    private static void saveCVsToFolder(DefaultListModel<String> cvListModel) {
+    private static void initializeCVFolder() {
         String userDesktop = System.getProperty("user.home") + File.separator + "Desktop";
-        Path cvFolder = Paths.get(userDesktop, "CV");
-
+        cvFolder = Paths.get(userDesktop, "CV");
+        
         try {
-            // Έλεγχος αν υπάρχει ο φάκελος Desktop
-            if (!Files.exists(cvFolder.getParent())) {
-                throw new IOException("Δεν βρέθηκε η επιφάνεια εργασίας.");
-            }
-
-            // Δημιουργία του φακέλου CV
+            // Create CV directory if it doesn't exist
             Files.createDirectories(cvFolder);
-
-            // Επιβεβαίωση δημιουργίας φακέλου
-            if (!Files.isDirectory(cvFolder)) {
-                throw new IOException("Αποτυχία δημιουργίας του φακέλου CV.");
-            }
-
-            // Εκτύπωση του μονοπατιού
-            System.out.println("Αποθήκευση αρχείων στον φάκελο: " + cvFolder);
-
-            // Αντιγραφή αρχείων
-            for (int i = 0; i < cvListModel.getSize(); i++) {
-                Path source = Paths.get(cvListModel.getElementAt(i));
-                Path target = cvFolder.resolve(source.getFileName());
-                Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
-                System.out.println("Αντιγραφή: " + source + " -> " + target);
-            }
-
-            System.out.println("Τα βιογραφικά αποθηκεύτηκαν στον φάκελο: " + cvFolder);
-
+            System.out.println("CV folder initialized at: " + cvFolder);
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Σφάλμα κατά την αποθήκευση των αρχείων: " + e.getMessage(), "Σφάλμα", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, 
+                "Σφάλμα κατά τη δημιουργία του φακέλου CV: " + e.getMessage(), 
+                "Σφάλμα", 
+                JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private static void saveCVsToFolder(DefaultListModel<String> cvListModel) throws IOException {
+        if (!Files.exists(cvFolder)) {
+            throw new IOException("Ο φάκελος CV δεν υπάρχει.");
+        }
+
+        // Copy files
+        for (int i = 0; i < cvListModel.getSize(); i++) {
+            Path source = Paths.get(cvListModel.getElementAt(i));
+            Path target = cvFolder.resolve(source.getFileName());
+            Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("Αντιγραφή: " + source + " -> " + target);
+        }
+
+        System.out.println("Τα βιογραφικά αποθηκεύτηκαν στον φάκελο: " + cvFolder);
     }
 
     public static Path getCVPath() {

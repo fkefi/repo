@@ -47,7 +47,7 @@ public class Txtreader {
     public void processFiles() {
         //Map<String, Map<String, Object>> allCandidates = new LinkedHashMap<>();
         Path directoryPath = CVSubmissionApp.cvFolder;
-        String outputFilePath = "E:\\myCVision\\mycv\\src\\resources\\cv\\output.json";
+        String outputFilePath = CVSubmissionApp.cvFolder.toString() + "\\output.json";
         
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         
@@ -218,7 +218,7 @@ public class Txtreader {
 
 public List<String> getFullNames() {
     List<String> names = new ArrayList<>();
-    String outputFilePath = "E:\\myCVision\\mycv\\src\\resources\\cv\\output.json";
+    String outputFilePath = CVSubmissionApp.cvFolder.toString() + "\\output.json";
     
     try {
         // Διάβασε το JSON αρχείο

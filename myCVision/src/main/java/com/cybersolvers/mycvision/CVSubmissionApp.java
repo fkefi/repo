@@ -173,10 +173,10 @@ public class CVSubmissionApp {
             Path source = Paths.get(cvListModel.getElementAt(i));
             Path target = cvFolder.resolve(source.getFileName());
             Files.copy(source, target, StandardCopyOption.REPLACE_EXISTING);
-            System.out.println("Αντιγραφή: " + source + " -> " + target);
+            System.out.println("Copy: " + source + " -> " + target);
         }
 
-        System.out.println("Τα βιογραφικά αποθηκεύτηκαν στον φάκελο: " + cvFolder);
+        System.out.println("The CVs where saved at: " + cvFolder);
     }
 
     public static Path getCVPath() {

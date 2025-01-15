@@ -3,8 +3,9 @@ package com.cybersolvers.mycvision;
 import javax.swing.*;
 import java.awt.*;
 
+
 public class CodeSearchFilter extends JDialog {
-    private Filter filter;
+    protected Filter filter;
 
     public CodeSearchFilter(Frame parent) {
         super(parent, "Search by Code", true);
@@ -12,7 +13,7 @@ public class CodeSearchFilter extends JDialog {
         requestCode();
     }
 
-    private void requestCode() {
+    protected void requestCode() {
         String input = JOptionPane.showInputDialog(this,
             "Please enter your code:",
             "Enter Code",

@@ -31,13 +31,9 @@ public class Filter {
         List<String> names = reader.getFullNames();
         id = new String[names.size()][2];
         
-        // Διάβασε τους υπάρχοντες κωδικούς από τη βάση δεδομένων
-        String[][] existingData = dbHandler.fetchStringArray("id");
         
-        if (existingData != null && existingData.length > 0) {
-            // Χρησιμοποίησε τους υπάρχοντες κωδικούς
-            id = existingData;
-        } else {
+        // Διάβασε τους υπάρχοντες κωδικούς από τη βάση δεδομένων
+
             // Δημιούργησε νέους κωδικούς μόνο αν δεν υπάρχουν ήδη
             Set<String> existingCodes = new HashSet<>();
             
@@ -55,7 +51,7 @@ public class Filter {
             // Αποθήκευσε στη βάση δεδομένων μόνο αν δημιουργήθηκαν νέοι κωδικοί
             dbHandler.insertStringArray("id", id);
         }
-    }
+    
 
     // Διαχωρισμός της εμφάνισης του πίνακα σε ξεχωριστή protected μέθοδο
     protected void displayTable() {

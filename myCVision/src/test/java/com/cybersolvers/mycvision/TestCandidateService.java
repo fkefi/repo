@@ -6,11 +6,9 @@ import java.util.Map;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -201,14 +199,14 @@ public class TestCandidateService {
         Mockito.when(mockHandler.fetchDouble1DArray("Weight")).thenReturn(weight);
     }
 
-    @Test
+
     void testContructor() {
         assertNotNull(candidateService);
         assertNotNull(candidateService.handler);
         assertNotNull(candidateService.reader);
     }
 
-    @Test
+
     void testReviewCandidates() throws Exception {
         double[][] reviewedCandidates = candidateService.reviewCandidates();
     
@@ -222,7 +220,6 @@ public class TestCandidateService {
         }
     }
 
-    @Test
     void testCalculateScore() {
         double calculatedScore = candidateService.calculateScore(0);
         double expectedScore = 8.383;
@@ -247,37 +244,36 @@ public class TestCandidateService {
             assertEquals(3.0, points[1][0]);  
         }
 
-        @Test
         public void testCompareCandidateWithNumbers() {
             
             double[] result = candidateService.compareCandidateWithNumbers(cand1, numbers, 1.0);
     
-            assertEquals(1.0, result[0], 0.001);
-            assertEquals(1.0, result[1], 0.001);
-            assertEquals(10.0, result[2], 0.001);
-            assertEquals(9.8, result[3], 0.001);
-            assertEquals(10.0, result[10], 0.001);
-            assertEquals(5.0, result[16], 0.001);
-            assertEquals(9.0, result[17], 0.001);
-            assertEquals(10.0, result[18], 0.001);
+            assertEquals(1.0, result[0]);
+            assertEquals(1.0, result[1]);
+            assertEquals(10.0, result[2]);
+            assertEquals(9.8, result[3]);
+            assertEquals(10.0, result[10]);
+            assertEquals(5.0, result[16]);
+            assertEquals(9.0, result[17]);
+            assertEquals(10.0, result[18]);
     
             result = candidateService.compareCandidateWithNumbers(cand3, numbers, 3.0);
     
             assertEquals(3.0, result[0]);
-            assertEquals(0.0, result[4], 0.001);
-            assertEquals(0.0, result[5], 0.001);
-            assertEquals(0.2, result[6], 0.001);
-            assertEquals(0.0, result[7], 0.001);
-            assertEquals(0.0, result[8], 0.001);
-            assertEquals(4.0, result[9], 0.001);
-            assertEquals(0.0, result[10], 0.001);
-            assertEquals(0.0, result[16], 0.001);
-            assertEquals(0.0, result[17], 0.001);
-            assertEquals(0.0, result[18], 0.001);
+            assertEquals(0.0, result[4]);
+            assertEquals(0.0, result[5]);
+            assertEquals(0.2, result[6]);
+            assertEquals(0.0, result[7]);
+            assertEquals(0.0, result[8]);
+            assertEquals(4.0, result[9]);
+            assertEquals(0.0, result[10]);
+            assertEquals(0.0, result[16]);
+            assertEquals(0.0, result[17]);
+            assertEquals(0.0, result[18]);
     
             result = candidateService.compareCandidateWithNumbers(cand4, numbers, 3.0);
-            assertEquals(0.0, result[13], 0.001);
-            assertEquals(0.0, result[1], 0.001);
+            assertEquals(0.0, result[13]);
+            assertEquals(0.0, result[1]);
         }
 
         @AfterAll

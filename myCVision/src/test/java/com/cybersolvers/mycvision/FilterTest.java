@@ -9,7 +9,10 @@ class FilterTest {
 
     @BeforeEach
     void setUp() {
-        filter = new Filter();
+        // Αρχικοποιούμε τον φάκελο CV πριν τη δημιουργία του filter
+        CVSubmissionApp.initializeCVFolder();  // Βεβαιώνεται ότι ο φάκελος cvFolder είναι έτοιμος
+        
+        filter = new Filter(); // Δημιουργία αντικειμένου Filter
     }
 
     @Test
@@ -29,6 +32,7 @@ class FilterTest {
         assertTrue(code1.length() <= 6);
         assertTrue(code2.length() <= 6);
     }
+
     @Test
     void testSearchByCodeWithValidInput() {
         // Έλεγχος με έγκυρο κωδικό
@@ -57,6 +61,7 @@ class FilterTest {
             "Μη αναμενόμενο αποτέλεσμα: " + result
         );
     }
+
     @Test
     void testIdArrayNotNull() {
         try {

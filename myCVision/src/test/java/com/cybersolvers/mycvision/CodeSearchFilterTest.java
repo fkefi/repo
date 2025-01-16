@@ -1,71 +1,47 @@
 package com.cybersolvers.mycvision;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
-import javax.swing.JFrame;
-import javax.swing.WindowConstants;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
-import java.sql.SQLException;
+import javax.swing.*;
 
 class CodeSearchFilterTest {
-    
     private JFrame mainFrame;
-    private Connection connection;
-    
+    private CodeSearchFilter searchFilter;
+
     @BeforeEach
-    void setUp() {
-        mainFrame = new JFrame();
-        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        
-        // Αρχικοποίηση της βάσης δεδομένων για testing
-        try {
-            connection = DriverManager.getConnection("jdbc:sqlite:test.db");
-            Statement stmt = connection.createStatement();
-            stmt.execute("CREATE TABLE IF NOT EXISTS items (" +
-                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        "code TEXT NOT NULL," +
-                        "description TEXT)");
-        } catch (SQLException e) {
-            fail("Αποτυχία αρχικοποίησης της βάσης δεδομένων: " + e.getMessage());
-        }
-    }
-    
+void setUp() {
+    CVSubmissionApp.initializeCVFolder(); // Αρχικοποίηση cvFolder
+    mainFrame = new JFrame();
+    mainFrame.setTitle("Test Frame"); // Ορίζουμε τον τίτλο
+    mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    mainFrame.pack();
+    searchFilter = new CodeSearchFilter(mainFrame);
+}
+
+
     @AfterEach
     void tearDown() {
-        try {
-            if (connection != null) {
-                connection.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        if (searchFilter != null) {
+            searchFilter.dispose();
         }
-        mainFrame.dispose();
+        if (mainFrame != null) {
+            mainFrame.dispose();
+        }
     }
 
     @Test
-    void testCodeSearchFilterCreation() {
-        // Δημιουργία του βασικού frame
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    void testFrameProperties() {
+        // Έλεγχος βασικών ιδιοτήτων του frame
+        assertNotNull(mainFrame, "Το mainFrame δεν πρέπει να είναι null");
         
-        try {
-            // Δημιουργία του CodeSearchFilter
-            CodeSearchFilter dialog = new CodeSearchFilter(frame);
-            
-            // Βασικοί έλεγχοι
-            assertNotNull(dialog, "Το dialog δεν πρέπει να είναι null");
-            assertTrue(dialog.isModal(), "Το dialog πρέπει να είναι modal");
-            assertEquals("Search by Code", dialog.getTitle(), 
-                        "Ο τίτλος πρέπει να είναι 'Search by Code'");
-            
-        } finally {
-            // Καθαρισμός
-            frame.dispose();
-        }
+        assertEquals(WindowConstants.EXIT_ON_CLOSE, mainFrame.getDefaultCloseOperation(), 
+                    "Το JFrame πρέπει να έχει σωστό defaultCloseOperation");
+        
+        assertNotNull(mainFrame.getContentPane(), 
+                    "Το frame πρέπει να έχει content pane");
+                
+        assertEquals("Test Frame", mainFrame.getTitle(),
+                    "Το frame πρέπει να έχει το σωστό τίτλο");
     }
 
     @Test

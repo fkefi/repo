@@ -261,23 +261,23 @@ public void insertDoubleArray(String tableName, double[][] array) throws SQLExce
 }
 public String[] fetchTableAsStringArray(String tableName) {
     List<String> results = new ArrayList<>();
-    String query = "SELECT * FROM " + tableName;
+    String query = "SELECT value FROM " + tableName; 
     
     try (
          Statement stmt = connection.createStatement();
          ResultSet rs = stmt.executeQuery(query)) {
         
         while (rs.next()) {
-            // Assuming the value we want is in the first column
-            results.add(rs.getString(1));
+            results.add(rs.getString("value")); 
         }
         
         return results.toArray(new String[0]);
     } catch (SQLException e) {
         System.err.println("Error fetching data from " + tableName + ": " + e.getMessage());
-        return new String[0]; // Return empty array instead of null
+        return new String[0]; 
     }
 }
+
 
 
 

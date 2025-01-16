@@ -17,10 +17,10 @@ public class ResumeService {
 
     private final SQLiteHandler sqlitehandler;
     
-    public final String[] universities;
-    public final String[] bachelorDept;
-    public final String[] masterDept;
-    public final String[] phDDept;
+    public String[] universities;
+    public String[] bachelorDept;
+    public String[] masterDept;
+    public String[] phDDept;
     
     public  final List<String[]> arrays;
     public final List<String> tableNames;

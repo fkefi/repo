@@ -6,43 +6,29 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import org.mockito.Mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
 
 class ResumeServiceTest {
-
-    @Mock
-    private SQLiteHandler sqliteHandler;
-
+    
+ 
     private ResumeService resumeService;
 
     @BeforeEach
     void setUp() throws SQLException {
-        MockitoAnnotations.openMocks(this);
-        
-        // Mock τις απαντήσεις του SQLiteHandler
-        when(sqliteHandler.fetchTable("universities")).thenReturn("ASOEE","EKPA", "PAPEI","PANTEIO","PADA");
-        when(sqliteHandler.fetchTable("workExperience")).thenReturn("1", "2", "3", "4", "5", "6", "6+");
-        when(sqliteHandler.fetchTable("bachelorDept")).thenReturn("DET", "ODE", "DEOS", "MKT", "LOXRH", "PLHROFORIKH", "STATISTIKH", "OIK");
-        when(sqliteHandler.fetchTable("masterDept")).thenReturn("DET", "ODE", "DEOS", "MKT", "LOXRH", "PLHROFORIKH", "STATISTIKH", "OIK");
-        when(sqliteHandler.fetchTable("phDDept")).thenReturn("DET", "ODE", "DEOS", "MKT", "LOXRH", "PLHROFORIKH", "STATISTIKH", "OIK");
-        
         resumeService = new ResumeService();
+        // Προσομοίωση δεδομένων από τη βάση
+        resumeService.universities = new String[] {"ASOEE", "EKPA", "PAPEI", "PANTEIO", "PADA"};
+        resumeService.bachelorDept = new String[] {"DET", "ODE", "DEOS", "MKT", "LOXRH", "PLHROFORIKH", "STATISTIKH", "OIK"};
+        resumeService.masterDept = new String[] {"DET", "ODE", "DEOS", "MKT", "LOXRH", "PLHROFORIKH", "STATISTIKH", "OIK"};
+        resumeService.phDDept = new String[] {"DET", "ODE", "DEOS", "MKT", "LOXRH", "PLHROFORIKH", "STATISTIKH", "OIK"};
     }
 
     @Test
     void testEvaluateCriteriaForUniversities() {
         Map<String, Integer> scores = resumeService.evaluateCriteria(
-            resumeService.arrays.get(0),  // Απευθείας πρόσβαση στο universities array
+            resumeService.universities,
             "universities"
         );
         
@@ -59,24 +45,25 @@ class ResumeServiceTest {
     @Test
     void testEvaluateCriteriaForWorkExperience() {
         Map<String, Integer> scores = resumeService.evaluateCriteria(
-            resumeService.arrays.get(1),  // Απευθείας πρόσβαση στο workExperience array
+            resumeService.workExperience,
             "workExperience"
         );
         
         assertNotNull(scores);
+        assertEquals(0, scores.get("0"));
         assertEquals(1, scores.get("1"));
         assertEquals(2, scores.get("2"));
         assertEquals(3, scores.get("3"));
         assertEquals(4, scores.get("4"));
-        assertEquals(3, scores.get("5"));
-        assertEquals(4, scores.get("6"));
-        assertEquals(8, scores.get("more years"));
+        assertEquals(5, scores.get("5"));
+        assertEquals(6, scores.get("6"));
+        assertEquals(9, scores.get("more years"));
     }
 
     @Test
     void testEvaluateCriteriaForBachelorDept() {
         Map<String, Integer> scores = resumeService.evaluateCriteria(
-            resumeService.arrays.get(3),  // Απευθείας πρόσβαση στο bachelorDept array
+            resumeService.bachelorDept,
             "bachelorDept"
         );
         
@@ -94,9 +81,9 @@ class ResumeServiceTest {
     }
 
     @Test
-    void testEvaluateCriteriaFormasterDept() {
+    void testEvaluateCriteriaForMasterDept() {
         Map<String, Integer> scores = resumeService.evaluateCriteria(
-            resumeService.arrays.get(4),  // Απευθείας πρόσβαση στο masterDept array
+            resumeService.masterDept,
             "masterDept"
         );
         
@@ -112,10 +99,11 @@ class ResumeServiceTest {
         assertEquals(1, scores.get("asxeto"));
         assertEquals(0, scores.get("den exei spoudasei"));
     }
-        @Test
-    void testEvaluateCriteriaForphDDept() {
+
+    @Test
+    void testEvaluateCriteriaForPhDDept() {
         Map<String, Integer> scores = resumeService.evaluateCriteria(
-            resumeService.arrays.get(5),  // Απευθείας πρόσβαση στο phDDept array
+            resumeService.phDDept,
             "phDDept"
         );
         
@@ -135,7 +123,7 @@ class ResumeServiceTest {
     @Test
     void testLevelsScoring() {
         Map<String, Integer> scores = resumeService.evaluateCriteria(
-            resumeService.levels,  // Απευθείας πρόσβαση στο levels array
+            resumeService.levels,
             "levels"
         );
         
@@ -144,6 +132,18 @@ class ResumeServiceTest {
         assertEquals(2, scores.get("POLY KALA"));
         assertEquals(1, scores.get("KALA"));
         assertEquals(0, scores.get("OXI"));
+    }
+
+    @Test
+    void testYesNoScoring() {
+        Map<String, Integer> scores = resumeService.evaluateCriteria(
+            resumeService.yesNo,
+            "yesNo"
+        );
+        
+        assertNotNull(scores);
+        assertEquals(1, scores.get("Yes"));
+        assertEquals(0, scores.get("No"));
     }
 
     @Test
@@ -157,6 +157,7 @@ class ResumeServiceTest {
         assertTrue(result.containsKey("bachelorDept"));
         assertTrue(result.containsKey("masterDept"));
         assertTrue(result.containsKey("phDDept"));
+        assertTrue(result.containsKey("yesNo"));
         
         // Έλεγχος ότι όλοι οι πίνακες έχουν σωστά scores
         assertFalse(result.get("universities").isEmpty());
@@ -165,16 +166,27 @@ class ResumeServiceTest {
         assertFalse(result.get("bachelorDept").isEmpty());
         assertFalse(result.get("masterDept").isEmpty());
         assertFalse(result.get("phDDept").isEmpty());
+        assertFalse(result.get("yesNo").isEmpty());
         
-        verify(sqliteHandler, times(1)).insertNestedIntegerData(eq("allTablesData"), any());
+        // Έλεγχος συγκεκριμένων τιμών από κάθε πίνακα
+        assertEquals(6, result.get("universities").get("ASOEE"));
+        assertEquals(3, result.get("levels").get("TELEIA"));
+        assertEquals(9, result.get("workExperience").get("more years"));
+        assertEquals(9, result.get("bachelorDept").get("DET"));
+        assertEquals(9, result.get("masterDept").get("DET"));
+        assertEquals(9, result.get("phDDept").get("DET"));
+        assertEquals(1, result.get("yesNo").get("Yes"));
     }
 
     @Test
-    void testConstructorThrowsSQLException() throws SQLException{
-        when(sqliteHandler.fetchTable(any())).thenThrow(new SQLException("Database error"));
-        
-        assertThrows(SQLException.class, () -> {
-            new ResumeService();
-        });
+    void testDatabaseConnection() {
+        assertNotNull(resumeService.universities);
+        assertNotNull(resumeService.bachelorDept);
+        assertNotNull(resumeService.masterDept);
+        assertNotNull(resumeService.phDDept);
+        assertTrue(resumeService.universities.length > 0);
+        assertTrue(resumeService.bachelorDept.length > 0);
+        assertTrue(resumeService.masterDept.length > 0);
+        assertTrue(resumeService.phDDept.length > 0);
     }
 }

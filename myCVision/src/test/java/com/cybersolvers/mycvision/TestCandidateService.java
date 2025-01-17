@@ -6,8 +6,6 @@ import java.util.Map;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,10 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TestCandidateService {
 
     protected CandidateService candidateService;
-    @Mock
-    protected SQLiteHandler mockHandler;
-    @Mock
-    protected Txtreader mockReader;
+   
     Map<String, Object> cand4;
     Map<String, Object> cand3;
     Map<String, Object> cand1;
@@ -33,8 +28,6 @@ public class TestCandidateService {
      @BeforeAll
     void setUp() throws SQLException {
         candidateService = new CandidateService();
-        mockHandler = Mockito.mock(SQLiteHandler.class);
-        mockReader = Mockito.mock(Txtreader.class);
 
         candidates = new LinkedHashMap<>();
         // Candidate 1
@@ -138,7 +131,8 @@ public class TestCandidateService {
         candidates.put("cand2", cand2);
         candidates.put("cand3", cand3);
         candidates.put("cand4", cand4);
-        Mockito.when(mockReader.toMap()).thenReturn(candidates);
+        candidateService.candidates = this.candidates;
+
 
         numbers = new LinkedHashMap<>();
         numbers.put("universities", Map.of(
@@ -179,15 +173,16 @@ public class TestCandidateService {
                 "5", 5,
                 "6++", 6
         ));
-
-        Mockito.when(mockHandler.fetchMapFromDatabase("allTablesData")).thenReturn(numbers);
+    
+        candidateService.numbers = this.numbers;
 
                 id = new String[][]{
                 {"John Doe", "1"},
                 {"Jane Smith", "2"},
                 {"Alice Johnson", "4"}
         };
-        Mockito.when(mockHandler.fetchStringArray("ID")).thenReturn(id);
+
+        candidateService.id = this.id;
         
         
         weight = new double[]{
@@ -195,8 +190,8 @@ public class TestCandidateService {
                 0.05, 0.09, 0.10, 0.04, 0.08, 0.06, 0.05, 0.05, 
                 0.04, 0.07
         };
+        candidateService.weight = this.weight;
 
-        Mockito.when(mockHandler.fetchDouble1DArray("Weight")).thenReturn(weight);
     }
 
 

@@ -2,6 +2,9 @@ package com.cybersolvers.mycvision;
 
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+
+import java.sql.SQLException;
+
 import javax.swing.*;
 
 class CodeSearchFilterTest {
@@ -9,7 +12,7 @@ class CodeSearchFilterTest {
     private CodeSearchFilter searchFilter;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws SQLException {
         CVSubmissionApp.initializeCVFolder(); // Αρχικοποίηση cvFolder
         mainFrame = new JFrame();
         mainFrame.setTitle("Test Frame"); // Ορίζουμε τον τίτλο
@@ -52,7 +55,7 @@ class CodeSearchFilterTest {
     }
 
     @Test
-    void testSearchFunctionality() {
+    void testSearchFunctionality() throws SQLException {
         CodeSearchFilter dialog = new CodeSearchFilter(mainFrame);
         assertNotNull(dialog, "Το dialog δεν πρέπει να είναι null");
     }

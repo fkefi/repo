@@ -87,7 +87,7 @@ public class ResumeService {
         }
         
         if ("universities".equals(tableName) || 
-            "degreeDept".equals(tableName) || 
+            "bachelorDept".equals(tableName) || 
             "masterDept".equals(tableName) || 
             "phDDept".equals(tableName)) {
             

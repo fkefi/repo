@@ -2,18 +2,19 @@ package com.cybersolvers.mycvision;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 
 public class CodeSearchFilter extends JDialog {
     protected Filter filter;
 
-    public CodeSearchFilter(Frame parent) {
+    public CodeSearchFilter(Frame parent) throws SQLException {
         super(parent, "Search by Code", true);
         filter = new Filter();
         requestCode();
     }
 
-    protected void requestCode() {
+    protected void requestCode() throws SQLException {
         String input = JOptionPane.showInputDialog(this,
             "Please enter your code:",
             "Enter Code",

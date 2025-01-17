@@ -27,7 +27,7 @@ public class TestCandidateService {
     double[] weight;
 
         @BeforeEach
-    void setUp() throws SQLException {
+    void setUp() throws SQLException, ClassNotFoundException {
         candidateService = new CandidateService();
 
         candidates = new LinkedHashMap<>();

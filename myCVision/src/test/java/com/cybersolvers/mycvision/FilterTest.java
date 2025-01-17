@@ -13,7 +13,7 @@ public class FilterTest {
     private SQLiteHandler dbHandler;
     
     @Before
-    public void setUp() {
+    public void setUp() throws SQLException, ClassNotFoundException {
         filter = new Filter();
         CVSubmissionApp.initializeCVFolder();
         try {

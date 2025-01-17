@@ -12,7 +12,7 @@ class CodeSearchFilterTest {
     private CodeSearchFilter searchFilter;
 
     @BeforeEach
-    void setUp() throws SQLException {
+    void setUp() throws SQLException,  ClassNotFoundException {
         CVSubmissionApp.initializeCVFolder(); // Αρχικοποίηση cvFolder
         mainFrame = new JFrame();
         mainFrame.setTitle("Test Frame"); // Ορίζουμε τον τίτλο
@@ -55,7 +55,7 @@ class CodeSearchFilterTest {
     }
 
     @Test
-    void testSearchFunctionality() throws SQLException {
+    void testSearchFunctionality() throws SQLException, ClassNotFoundException {
         CodeSearchFilter dialog = new CodeSearchFilter(mainFrame);
         assertNotNull(dialog, "Το dialog δεν πρέπει να είναι null");
     }

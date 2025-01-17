@@ -11,7 +11,7 @@ public class CustomCriteriaAppTest {
     private CustomCriteriaApp app;
 
     @Before
-    public void setUp() throws SQLException {
+    public void setUp() throws SQLException,  ClassNotFoundException {
         app = new CustomCriteriaApp();
     }
 

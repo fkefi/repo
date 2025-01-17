@@ -17,7 +17,7 @@ class ResumeServiceTest {
     private ResumeService resumeService;
 
     @BeforeEach
-    void setUp() throws SQLException {
+    void setUp() throws SQLException, ClassNotFoundException {
         resumeService = new ResumeService();
         // Προσομοίωση δεδομένων από τη βάση
         resumeService.universities = new String[] {"ASOEE", "EKPA", "PAPEI", "PANTEIO", "PADA"};

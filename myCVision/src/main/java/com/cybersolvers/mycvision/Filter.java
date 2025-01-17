@@ -15,22 +15,21 @@ public class Filter {
     
     protected URL resource = Filter.class.getClassLoader().getResource("my_database.db");
     protected String dbPath = resource.getPath();
-    protected String dbUrl = "jdbc:sqlite:" + dbPath;
-
+    protected String dbUrl = "jdbc:sqlite:" + dbPath ;
     public Filter() {
         reader = new Txtreader();
         try {
             this.dbHandler = new SQLiteHandler(dbUrl);
-            processCandidates();  // Καλείται από τον constructor
         } catch (SQLException e) {
             System.err.println("Database error: " + e.getMessage());
         }
     }
+    
 
     protected void processCandidates() throws SQLException {
         List<String> names = reader.getFullNames();
         id = new String[names.size()][2];
-        
+
         
         // Διάβασε τους υπάρχοντες κωδικούς από τη βάση δεδομένων
 
@@ -53,20 +52,10 @@ public class Filter {
         }
     
 
-    // Διαχωρισμός της εμφάνισης του πίνακα σε ξεχωριστή protected μέθοδο
-    protected void displayTable() {
-        System.out.println("\nId Table (Names and Codes):");
-        System.out.println("----------------------------------------");
-        System.out.println("Name\t\t\tCode");
-        System.out.println("----------------------------------------");
-        for (String[] candidate : id) {
-            System.out.printf("%s\t\t%s\n", candidate[0], candidate[1]);
-        }
-        System.out.println("----------------------------------------\n");
-        tableDisplayed = true;
-    }
 
-    public String searchByCode(double searchCode) {
+
+    public String searchByCode(double searchCode) throws SQLException {
+        this.id = dbHandler.fetchStringArray("id");
         try {
             String searchCodeStr = String.format("%.0f", searchCode);
             String name = "";

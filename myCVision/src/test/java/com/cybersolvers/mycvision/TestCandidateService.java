@@ -4,8 +4,9 @@ import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -25,7 +26,7 @@ public class TestCandidateService {
     String[][] id;
     double[] weight;
 
-     @BeforeAll
+        @BeforeEach
     void setUp() throws SQLException {
         candidateService = new CandidateService();
 
@@ -194,14 +195,14 @@ public class TestCandidateService {
 
     }
 
-
+    @Test
     void testContructor() {
         assertNotNull(candidateService);
         assertNotNull(candidateService.handler);
         assertNotNull(candidateService.reader);
     }
 
-
+    @Test
     void testReviewCandidates() throws Exception {
         double[][] reviewedCandidates = candidateService.reviewCandidates();
     
@@ -215,6 +216,7 @@ public class TestCandidateService {
         }
     }
 
+    @Test
     void testCalculateScore() {
         double calculatedScore = candidateService.calculateScore(0);
         double expectedScore = 8.383;
@@ -229,6 +231,7 @@ public class TestCandidateService {
         assertEquals(expectedScore, calculatedScore, 0.001);
         }
 
+        @Test
         public void testCreatePoints() {
             double[][] points = candidateService.createPoints();
     
@@ -239,6 +242,7 @@ public class TestCandidateService {
             assertEquals(3.0, points[1][0]);  
         }
 
+        @Test
         public void testCompareCandidateWithNumbers() {
             
             double[] result = candidateService.compareCandidateWithNumbers(cand1, numbers, 1.0);

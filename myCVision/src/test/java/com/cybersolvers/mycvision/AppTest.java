@@ -1,4 +1,4 @@
-package com.cybersolvers;
+package com.cybersolvers.mycvision;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;

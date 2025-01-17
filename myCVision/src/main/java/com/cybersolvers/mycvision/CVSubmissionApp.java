@@ -147,7 +147,7 @@ public class CVSubmissionApp {
         return frame; // Επιστρέφει το JFrame
     }
 
-    private static void initializeCVFolder() {
+    public static void initializeCVFolder() {
         String userDesktop = System.getProperty("user.home") + File.separator + "Desktop";
         cvFolder = Paths.get(userDesktop, "CV");
         

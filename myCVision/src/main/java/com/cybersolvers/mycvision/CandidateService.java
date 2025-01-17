@@ -38,6 +38,18 @@ public class CandidateService  {
         //System.out.println("CandidateService initialized:" + candidates + numberOfCandidates);
     }
 
+    public CandidateService(String[][] id, Map<String, Map<String, Object>> candidates,
+     Map<String, Map<String, Integer>> numbers, double[] weight) {
+        this.id = id;
+        this.candidates = candidates;
+        this.numbers = numbers;
+        this.weight = weight;
+        this.numberOfCandidates = candidates.size();
+        this.numberOfCriteria = weight.length;
+        this.points = createPoints();
+        this.handler = null;
+    }
+
     public double[][] reviewCandidates() throws SQLException {
         double[][] finalCandidates = new double[points.length][2];
 
@@ -48,7 +60,11 @@ public class CandidateService  {
         }
 
         Arrays.sort(finalCandidates, (a, b) -> Double.compare(b[1], a[1]));
-        handler.insertDoubleArray("finalCandidates", finalCandidates);
+        if (handler != null) {
+            handler.insertDoubleArray("finalCandidates", finalCandidates);
+        }
+            
+       
         return finalCandidates;
     }
 

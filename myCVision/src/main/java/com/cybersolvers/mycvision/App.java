@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 public class App {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
         // Κλήση μεθόδου για γραφικά 
         CustomCriteriaApp customCriteriaApp = new CustomCriteriaApp();

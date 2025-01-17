@@ -8,7 +8,7 @@ import java.sql.SQLException;
 public class CodeSearchFilter extends JDialog {
     protected Filter filter;
 
-    public CodeSearchFilter(Frame parent) throws SQLException {
+    public CodeSearchFilter(Frame parent) throws SQLException, ClassNotFoundException {
         super(parent, "Search by Code", true);
         filter = new Filter();
         requestCode();

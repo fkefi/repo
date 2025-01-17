@@ -13,11 +13,14 @@ public class Filter {
     private static boolean tableDisplayed = false;
     private static Set<String> usedCodes = new HashSet<>();
     
-    protected URL resource = Filter.class.getClassLoader().getResource("my_database.db");
-    protected String dbPath = resource.getPath();
-    protected String dbUrl = "jdbc:sqlite:" + dbPath ;
-    public Filter() {
+
+    public Filter() throws SQLException, ClassNotFoundException {
         reader = new Txtreader();
+            // Φορτώνουμε τον driver
+    Class.forName("org.sqlite.JDBC");
+
+    // Δημιουργούμε το connection string
+    String dbUrl = "jdbc:sqlite::resource:my_database.db";
         try {
             this.dbHandler = new SQLiteHandler(dbUrl);
         } catch (SQLException e) {

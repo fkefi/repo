@@ -10,9 +10,7 @@ public class ResumeService {
     public final String[] levels = {"TELEIA", "POLY KALA", "KALA", "OXI"};
     public final String[] workExperience = {"0", "1", "2", "3", "4", "5", "6"};
     public final String[] yesNo = {"Yes", "No"};
-    URL resource = ResumeService.class.getClassLoader().getResource("my_database.db");
-    String dbPath = resource.getPath();
-    String dbUrl = "jdbc:sqlite:" + dbPath;
+
 
 
     private final SQLiteHandler sqlitehandler;
@@ -26,7 +24,12 @@ public class ResumeService {
     public final List<String> tableNames;
     
     // Constructor
-    public ResumeService() throws SQLException {
+    public ResumeService() throws SQLException, ClassNotFoundException {
+            // Φορτώνουμε τον driver
+    Class.forName("org.sqlite.JDBC");
+
+    // Δημιουργούμε το connection string
+    String dbUrl = "jdbc:sqlite::resource:my_database.db";
         this.sqlitehandler = new SQLiteHandler(dbUrl);
         
         // Initialize database values

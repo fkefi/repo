@@ -44,9 +44,7 @@ public class CustomCriteriaApp {
         "programmingLanguage"
     };
 
-    URL resource = ResumeService.class.getClassLoader().getResource("my_database.db");
-    String dbPath = resource.getPath();
-    String dbUrl = "jdbc:sqlite:" + dbPath;
+
     private final SQLiteHandler handler;
 
     // Data structures
@@ -59,7 +57,12 @@ public class CustomCriteriaApp {
     private static JPanel mainPanel;
 
     // Constructor
-    public CustomCriteriaApp() throws SQLException {
+    public CustomCriteriaApp() throws SQLException, ClassNotFoundException {
+            // Φορτώνουμε τον driver
+    Class.forName("org.sqlite.JDBC");
+
+    // Δημιουργούμε το connection string
+    String dbUrl = "jdbc:sqlite::resource:my_database.db";
         handler = new SQLiteHandler(dbUrl);
     }
 

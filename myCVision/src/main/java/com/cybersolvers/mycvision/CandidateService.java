@@ -14,14 +14,17 @@ public class CandidateService  {
     protected int numberOfCriteria;
     protected double[][] points;
     protected String jsonFilePath = "E:\\myCVision\\mycv\\src\\resources\\cv\\output.json"; 
-    URL resource = CandidateService.class.getClassLoader().getResource("my_database.db");
-    String dbPath = resource.getPath();
-    String dbUrl = "jdbc:sqlite:" + dbPath;
+
 
     protected final SQLiteHandler handler;
     Txtreader reader;
 
-    public CandidateService() throws SQLException {
+    public CandidateService() throws SQLException, ClassNotFoundException {
+        // Φορτώνουμε τον driver
+        Class.forName("org.sqlite.JDBC");
+
+        // Δημιουργούμε το connection string
+        String dbUrl = "jdbc:sqlite::resource:my_database.db";
         this.handler = new SQLiteHandler(dbUrl);
         this.reader = new Txtreader();
         this.id = handler.fetchStringArray("id");

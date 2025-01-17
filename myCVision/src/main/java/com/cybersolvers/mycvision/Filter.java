@@ -12,7 +12,7 @@ public class Filter {
     protected SQLiteHandler dbHandler;  // Άλλαξε σε protected
     private static boolean tableDisplayed = false;
     private static Set<String> usedCodes = new HashSet<>();
-    
+    String dbUrl;  
 
     public Filter() throws SQLException, ClassNotFoundException {
         reader = new Txtreader();
@@ -20,7 +20,7 @@ public class Filter {
     Class.forName("org.sqlite.JDBC");
 
     // Δημιουργούμε το connection string
-    String dbUrl = "jdbc:sqlite::resource:my_database.db";
+    dbUrl = "jdbc:sqlite::resource:my_database.db";
         try {
             this.dbHandler = new SQLiteHandler(dbUrl);
         } catch (SQLException e) {

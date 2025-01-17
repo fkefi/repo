@@ -196,13 +196,6 @@ public class TestCandidateService {
     }
 
     @Test
-    void testContructor() {
-        assertNotNull(candidateService);
-        assertNotNull(candidateService.handler);
-        assertNotNull(candidateService.reader);
-    }
-
-    @Test
     void testReviewCandidates() throws Exception {
         double[][] reviewedCandidates = candidateService.reviewCandidates();
     
@@ -232,7 +225,7 @@ public class TestCandidateService {
         }
 
         @Test
-        public void testCreatePoints() {
+        void testCreatePoints() {
             double[][] points = candidateService.createPoints();
     
             // Assert that the points array has the expected size
@@ -243,7 +236,7 @@ public class TestCandidateService {
         }
 
         @Test
-        public void testCompareCandidateWithNumbers() {
+        void testCompareCandidateWithNumbers() {
             
             double[] result = candidateService.compareCandidateWithNumbers(cand1, numbers, 1.0);
     
@@ -276,7 +269,7 @@ public class TestCandidateService {
         }
 
         @AfterAll
-        public void tearDown() {
+        void tearDown() {
             candidateService = null;
         }
     

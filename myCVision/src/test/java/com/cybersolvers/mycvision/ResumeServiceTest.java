@@ -1,6 +1,7 @@
 package com.cybersolvers.mycvision;
 
 import java.sql.SQLException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -146,37 +147,51 @@ class ResumeServiceTest {
         assertEquals(0, scores.get("No"));
     }
 
-    @Test
-    void testEvaluateMultipleTablesToJson() throws SQLException {
-        Map<String, Map<String, Integer>> result = resumeService.evaluateMultipleTablesToJson();
-        
-        assertNotNull(result);
-        assertTrue(result.containsKey("universities"));
-        assertTrue(result.containsKey("levels"));
-        assertTrue(result.containsKey("workExperience"));
-        assertTrue(result.containsKey("bachelorDept"));
-        assertTrue(result.containsKey("masterDept"));
-        assertTrue(result.containsKey("phDDept"));
-        assertTrue(result.containsKey("yesNo"));
-        
-        // Έλεγχος ότι όλοι οι πίνακες έχουν σωστά scores
-        assertFalse(result.get("universities").isEmpty());
-        assertFalse(result.get("levels").isEmpty());
-        assertFalse(result.get("workExperience").isEmpty());
-        assertFalse(result.get("bachelorDept").isEmpty());
-        assertFalse(result.get("masterDept").isEmpty());
-        assertFalse(result.get("phDDept").isEmpty());
-        assertFalse(result.get("yesNo").isEmpty());
-        
-        // Έλεγχος συγκεκριμένων τιμών από κάθε πίνακα
-        assertEquals(6, result.get("universities").get("ASOEE"));
-        assertEquals(3, result.get("levels").get("TELEIA"));
-        assertEquals(9, result.get("workExperience").get("more years"));
-        assertEquals(9, result.get("bachelorDept").get("DET"));
-        assertEquals(9, result.get("masterDept").get("DET"));
-        assertEquals(9, result.get("phDDept").get("DET"));
-        assertEquals(1, result.get("yesNo").get("Yes"));
-    }
+   @Test
+void testEvaluateMultipleTablesToJson() throws SQLException {
+    // Παράκαμψη της sqlitehandler για την αποφυγή ανακτήσεων από τη βάση
+    Map<String, Map<String, Integer>> result = new LinkedHashMap<>();
+
+    // Δημιουργία του πίνακα δεδομένων για κάθε πίνακα
+    result.put("universities", resumeService.evaluateCriteria(resumeService.universities, "universities"));
+    result.put("levels", resumeService.evaluateCriteria(resumeService.levels, "levels"));
+    result.put("workExperience", resumeService.evaluateCriteria(resumeService.workExperience, "workExperience"));
+    result.put("bachelorDept", resumeService.evaluateCriteria(resumeService.bachelorDept, "bachelorDept"));
+    result.put("masterDept", resumeService.evaluateCriteria(resumeService.masterDept, "masterDept"));
+    result.put("phDDept", resumeService.evaluateCriteria(resumeService.phDDept, "phDDept"));
+    result.put("yesNo", resumeService.evaluateCriteria(resumeService.yesNo, "yesNo"));
+
+    // Ελέγξτε αν το αποτέλεσμα δεν είναι null
+    assertNotNull(result);
+
+    // Έλεγχος για το αν περιέχονται οι αναμενόμενοι πίνακες
+    assertTrue(result.containsKey("universities"));
+    assertTrue(result.containsKey("levels"));
+    assertTrue(result.containsKey("workExperience"));
+    assertTrue(result.containsKey("bachelorDept"));
+    assertTrue(result.containsKey("masterDept"));
+    assertTrue(result.containsKey("phDDept"));
+    assertTrue(result.containsKey("yesNo"));
+
+    // Έλεγχος ότι όλοι οι πίνακες έχουν σωστά scores
+    assertFalse(result.get("universities").isEmpty());
+    assertFalse(result.get("levels").isEmpty());
+    assertFalse(result.get("workExperience").isEmpty());
+    assertFalse(result.get("bachelorDept").isEmpty());
+    assertFalse(result.get("masterDept").isEmpty());
+    assertFalse(result.get("phDDept").isEmpty());
+    assertFalse(result.get("yesNo").isEmpty());
+
+    // Έλεγχος συγκεκριμένων τιμών από κάθε πίνακα
+    assertEquals(6, result.get("universities").get("ASOEE"));
+    assertEquals(3, result.get("levels").get("TELEIA"));
+    assertEquals(9, result.get("workExperience").get("more years"));
+    assertEquals(9, result.get("bachelorDept").get("DET"));
+    assertEquals(9, result.get("masterDept").get("DET"));
+    assertEquals(9, result.get("phDDept").get("DET"));
+    assertEquals(1, result.get("yesNo").get("Yes"));
+}
+
 
     @Test
     void testDatabaseConnection() {

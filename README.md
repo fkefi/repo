@@ -25,7 +25,21 @@ mvn clean install
 ```
 
 ---
+ΣΗΜΑΝΤΙΚΗ ΠΑΡΑΤΗΡΗΣΗ.
 
+Κάναμε public το repository μας 18/02/2025 και αντιμετωπίσαμε αυτό το πρόβλημα, 
+Your Twilio SendGrid API key has been deleted
+We have detected that an API key belonging to Twilio SendGrid Account EFTHALIA FAKORELLI is publicly listed online.
+To prevent unauthorized access and modification of your account, this key has been deleted.
+
+The following API key(s) have been deleted;
+
+Οπότε για να λειτουργήσει το email θα πρέπει να αντικαταστήσετε το παλιό API KEY με το καινούριο, που δεν μπορούμε να κάνουμε δημόσια για λόγους ασφαλείας.
+Το νέο API KEY θα σας έχει αποσταλλεί στο email σας απο το t8230156@aueb.gr .
+
+Ευχαριστούμε για τη κατανόηση!
+
+---
 ## Οδηγίες Εκτέλεσης
 ### Εκτέλεση της κύριας εφαρμογής:
 ```bash

@@ -129,10 +129,10 @@ class ResumeServiceTest {
         );
         
         assertNotNull(scores);
-        assertEquals(3, scores.get("TELEIA"));
-        assertEquals(2, scores.get("POLY KALA"));
-        assertEquals(1, scores.get("KALA"));
-        assertEquals(0, scores.get("OXI"));
+        assertEquals(3, scores.get("Excellent"));
+        assertEquals(2, scores.get("Very Good"));
+        assertEquals(1, scores.get("Good"));
+        assertEquals(0, scores.get("No"));
     }
 
     @Test

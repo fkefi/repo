@@ -184,7 +184,7 @@ void testEvaluateMultipleTablesToJson() throws SQLException {
 
     // Έλεγχος συγκεκριμένων τιμών από κάθε πίνακα
     assertEquals(6, result.get("universities").get("ASOEE"));
-    assertEquals(3, result.get("levels").get("TELEIA"));
+    assertEquals(3, result.get("levels").get("Excellent"));
     assertEquals(9, result.get("workExperience").get("more years"));
     assertEquals(9, result.get("bachelorDept").get("DET"));
     assertEquals(9, result.get("masterDept").get("DET"));

@@ -2,6 +2,7 @@ package com.cybersolvers.mycvision;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.cert.CertificateEncodingException;
 import java.sql.SQLException;
 
 import com.sendgrid.Method;
@@ -17,11 +18,13 @@ public class MailerService {
 
     // Φορτώνουμε το API Key 
     private static final String SENDGRID_API_KEY = "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";
-    URL resource = ResumeService.class.getClassLoader().getResource("my_database.db");
+    /*URL resource = ResumeService.class.getClassLoader().getResource("my_database.db");
     String dbPath = resource.getPath();
-    String dbUrl = "jdbc:sqlite:" + dbPath;
+    String dbUrl = "jdbc:sqlite:" + dbPath;*/
     private final SQLiteHandler sqliteHandler;
-    public MailerService() throws SQLException {
+    public MailerService() throws SQLException, ClassNotFoundException {
+        Class.forName("org.sqlite.JDBC");
+        String dbUrl = "jdbc:sqlite::resource:my_database.db";
         this.sqliteHandler = new SQLiteHandler(dbUrl);
     }
 

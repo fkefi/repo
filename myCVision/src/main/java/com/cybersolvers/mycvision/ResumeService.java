@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ResumeService {
-    public final String[] levels = {"Excellent", "Very good", "Good", "No"};
+    public final String[] levels = {"Excellent", "Very Good", "Good", "No"};
     public final String[] workExperience = {"0", "1", "2", "3", "4", "5", "6"};
     public final String[] yesNo = {"Yes", "No"};
 

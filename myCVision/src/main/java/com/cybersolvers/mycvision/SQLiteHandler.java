@@ -6,51 +6,66 @@ public class SQLiteHandler {
 
     private Connection connection;
 
-    // Constructor: Connects to the SQLite database
-    public SQLiteHandler(String dbUrl) throws SQLException {
+     // Constructor: Connects to the SQLite database
+     public SQLiteHandler(String dbUrl) throws SQLException {
         connection = DriverManager.getConnection(dbUrl);
     }
 
-    // Method 1: Insert a multidimensional array into the database
-    public <T> void insertArray(String tableName, T array, int... dimensions) throws SQLException {
-        StringBuilder createTableQuery = new StringBuilder("CREATE TABLE IF NOT EXISTS ").append(tableName).append(" (");
-        for (int i = 0; i < dimensions.length; i++) {
-            createTableQuery.append("dim").append(i).append(" INTEGER, ");
-        }
-        createTableQuery.append("value TEXT");
-        createTableQuery.append(");");
+
+    // method to insert a 1D  String array into database
+    public void insert1DStringArray(String tableName, String[] array) throws SQLException {
+        
+        String createTableQuery = "CREATE TABLE IF NOT EXISTS " + tableName +
+                " (indx INTEGER PRIMARY KEY, value TEXT);";
 
         try (Statement stmt = connection.createStatement()) {
-            stmt.execute(createTableQuery.toString());
+            stmt.execute(createTableQuery);
+        }
+        String deleteQuery = "DELETE FROM " + tableName + ";";
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute(deleteQuery);
         }
 
-        String insertQuery = "INSERT INTO " + tableName + " (" + 
-                             String.join(", ", Arrays.stream(dimensions).mapToObj(i -> "dim" + i).toArray(String[]::new)) + ", value) VALUES (" + 
-                             String.join(", ", Collections.nCopies(dimensions.length + 1, "?")) + ");";
+        String insertQuery = "INSERT INTO " + tableName + " (indx, value) VALUES (?, ?);";
         try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
-            insertRecursive(array, pstmt, new int[0]);
+            for (int i = 0; i < array.length; i++) {
+                pstmt.setInt(1, i);           
+                pstmt.setString(2, array[i]); 
+                pstmt.executeUpdate();
+            }
+        }
+
+    }
+
+    // method to insert a double 1D array into the database
+    public void insert1DdoubleArray(String tableName, double[] array) throws SQLException {
+        // Create the table if it doesn't already exist
+        String createTableQuery = "CREATE TABLE IF NOT EXISTS " + tableName +
+                " (idx INTEGER PRIMARY KEY, value REAL);";
+    
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute(createTableQuery);
+        }
+    
+        // Clear the table before inserting new data
+        String deleteQuery = "DELETE FROM " + tableName + ";";
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute(deleteQuery);
+        }
+    
+        // Insert the new array values
+        String insertQuery = "INSERT INTO " + tableName + " (idx, value) VALUES (?, ?);";
+        try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
+            for (int i = 0; i < array.length; i++) {
+                pstmt.setInt(1, i);           // idx column
+                pstmt.setDouble(2, array[i]); // value column
+                pstmt.executeUpdate();
+            }
         }
     }
 
-    private <T> void insertRecursive(T array, PreparedStatement pstmt, int[] indices) throws SQLException {
-        if (array instanceof Object[]) {
-            Object[] objArray = (Object[]) array;
-            for (int i = 0; i < objArray.length; i++) {
-                int[] newIndices = Arrays.copyOf(indices, indices.length + 1);
-                newIndices[indices.length] = i;
-                insertRecursive(objArray[i], pstmt, newIndices);
-            }
-        } else {
-            for (int i = 0; i < indices.length; i++) {
-                pstmt.setInt(i + 1, indices[i]);
-            }
-            pstmt.setString(indices.length + 1, array.toString());
-            pstmt.executeUpdate();
-        }
-    }
-
-    // Method 2: Retrieve an array from the database
-    public Object fetchTable(String tableName) throws SQLException {
+     // Method Retrieve an array from the database
+     public Object fetchTable(String tableName) throws SQLException {
         String query = "SELECT * FROM " + tableName;
         try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
             ResultSetMetaData metaData = rs.getMetaData();
@@ -100,75 +115,170 @@ public class SQLiteHandler {
         }
     }
     
+    // Method : Insert a nested Map with Integer values into the database
+    public void insertNestedIntegerData(String tableName, Map<String, Map<String, Integer>> nestedMap) throws SQLException {
+    String createTableQuery = "CREATE TABLE IF NOT EXISTS " + tableName + " (outer_key TEXT, inner_key TEXT, int_value INTEGER);";
+    try (Statement stmt = connection.createStatement()) {
+        stmt.execute(createTableQuery);
+    }
 
-    // Method 3: Insert a JSON object as a Map into the database
-    public void insertJsonAsMap(String tableName, Map<String, Object> map) throws SQLException {
-        String createTableQuery = "CREATE TABLE IF NOT EXISTS " + tableName + " (key TEXT, value TEXT);";
-        try (Statement stmt = connection.createStatement()) {
-            stmt.execute(createTableQuery);
-        }
-
-        String insertQuery = "INSERT INTO " + tableName + " (key, value) VALUES (?, ?);";
-        try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
-                pstmt.setString(1, entry.getKey());
-                pstmt.setString(2, entry.getValue().toString());
+    String insertQuery = "INSERT INTO " + tableName + " (outer_key, inner_key, int_value) VALUES (?, ?, ?);";
+    try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
+        for (Map.Entry<String, Map<String, Integer>> outerEntry : nestedMap.entrySet()) {
+            String outerKey = outerEntry.getKey();
+            for (Map.Entry<String, Integer> innerEntry : outerEntry.getValue().entrySet()) {
+                pstmt.setString(1, outerKey);
+                pstmt.setString(2, innerEntry.getKey());
+                pstmt.setInt(3, innerEntry.getValue()); // Εισαγωγή ακέραιου
                 pstmt.executeUpdate();
             }
         }
     }
+}
 
-    // Method 4: Retrieve a JSON object as a Map from the database
-    public Map<String, Object> fetchJsonAsMap(String tableName) throws SQLException {
-        String query = "SELECT * FROM " + tableName;
-        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
-            Map<String, Object> map = new HashMap<>();
-            while (rs.next()) {
-                String key = rs.getString("key"); 
-                Object value = rs.getObject("value"); 
-                map.put(key, value);
-            }
-            return map;
-        }
+public void insertStringArray(String tableName, String[][] array) throws SQLException {
+    String createTableQuery = "CREATE TABLE IF NOT EXISTS " + tableName + " (row_index INTEGER, col_index INTEGER, value TEXT);";
+    try (Statement stmt = connection.createStatement()) {
+        stmt.execute(createTableQuery);
     }
 
-    // Method 5: Insert a nested Map into the database
-    public void insertNestedMap(String tableName, Map<String, Map<String, Object>> nestedMap) throws SQLException {
-        String createTableQuery = "CREATE TABLE IF NOT EXISTS " + tableName + " (outer_key TEXT, inner_key TEXT, value TEXT);";
-        try (Statement stmt = connection.createStatement()) {
-            stmt.execute(createTableQuery);
-        }
-
-        String insertQuery = "INSERT INTO " + tableName + " (outer_key, inner_key, value) VALUES (?, ?, ?);";
-        try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
-            for (Map.Entry<String, Map<String, Object>> outerEntry : nestedMap.entrySet()) {
-                String outerKey = outerEntry.getKey();
-                for (Map.Entry<String, Object> innerEntry : outerEntry.getValue().entrySet()) {
-                    pstmt.setString(1, outerKey);
-                    pstmt.setString(2, innerEntry.getKey());
-                    pstmt.setString(3, innerEntry.getValue().toString());
-                    pstmt.executeUpdate();
-                }
+    String insertQuery = "INSERT INTO " + tableName + " (row_index, col_index, value) VALUES (?, ?, ?);";
+    try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[i].length; j++) {
+                pstmt.setInt(1, i);
+                pstmt.setInt(2, j);
+                pstmt.setString(3, array[i][j]);
+                pstmt.executeUpdate();
             }
         }
     }
+}
+    // Method: Fetch a double[][] from the database
+public double[][] fetchDoubleArray(String tableName) throws SQLException {
+    String query = "SELECT * FROM " + tableName;
+    try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+        List<int[]> indicesList = new ArrayList<>();
+        List<Double> values = new ArrayList<>();
 
-    // Method 6: Retrieve a nested Map from the database
-    public Map<String, Map<String, Object>> fetchNestedMap(String tableName) throws SQLException {
-        String query = "SELECT * FROM " + tableName;
-        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
-            Map<String, Map<String, Object>> nestedMap = new HashMap<>();
-            while (rs.next()) {
-                String outerKey = rs.getString("outer_key");
-                String innerKey = rs.getString("inner_key");
-                Object value = rs.getObject("value");
+        while (rs.next()) {
+            int row = rs.getInt("row_index");
+            int col = rs.getInt("col_index");
+            double value = rs.getDouble("value");
+            indicesList.add(new int[]{row, col});
+            values.add(value);
+        }
 
-                nestedMap.putIfAbsent(outerKey, new HashMap<>());
-                nestedMap.get(outerKey).put(innerKey, value);
+        int maxRows = indicesList.stream().mapToInt(idx -> idx[0] + 1).max().orElse(0);
+        int maxCols = indicesList.stream().mapToInt(idx -> idx[1] + 1).max().orElse(0);
+        double[][] array = new double[maxRows][maxCols];
+
+        for (int i = 0; i < indicesList.size(); i++) {
+            int[] indices = indicesList.get(i);
+            array[indices[0]][indices[1]] = values.get(i);
+        }
+        return array;
+    }
+}
+   
+public double[] fetchDouble1DArray(String tableName) throws SQLException {
+    // Simple query without ORDER BY if row_index doesn't exist
+    String query = "SELECT value FROM " + tableName;
+    
+    try (Statement stmt = connection.createStatement();
+         ResultSet rs = stmt.executeQuery(query)) {
+        List<Double> values = new ArrayList<>();
+        while (rs.next()) {
+            values.add(rs.getDouble("value"));
+        }
+        return values.stream().mapToDouble(Double::doubleValue).toArray();
+    }
+}
+    
+
+    // Method: Fetch a String[][] from the database
+public String[][] fetchStringArray(String tableName) throws SQLException {
+    String query = "SELECT * FROM " + tableName;
+    try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+        List<int[]> indicesList = new ArrayList<>();
+        List<String> values = new ArrayList<>();
+
+        while (rs.next()) {
+            int row = rs.getInt("row_index");
+            int col = rs.getInt("col_index");
+            String value = rs.getString("value");
+            indicesList.add(new int[]{row, col});
+            values.add(value);
+        }
+
+        int maxRows = indicesList.stream().mapToInt(idx -> idx[0] + 1).max().orElse(0);
+        int maxCols = indicesList.stream().mapToInt(idx -> idx[1] + 1).max().orElse(0);
+        String[][] array = new String[maxRows][maxCols];
+
+        for (int i = 0; i < indicesList.size(); i++) {
+            int[] indices = indicesList.get(i);
+            array[indices[0]][indices[1]] = values.get(i);
+        }
+        return array;
+    }
+}
+     
+     // Method: Fetch a Map<String, Map<String, Integer>> from the database
+public Map<String, Map<String, Integer>> fetchMapFromDatabase(String tableName) throws SQLException {
+    String query = "SELECT * FROM " + tableName;
+    try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+        Map<String, Map<String, Integer>> map = new HashMap<>();
+        while (rs.next()) {
+            String outerKey = rs.getString("outer_key");
+            String innerKey = rs.getString("inner_key");
+            int value = rs.getInt("int_value");
+
+            map.computeIfAbsent(outerKey, k -> new HashMap<>()).put(innerKey, value);
+        }
+        return map;
+    }
+}
+  
+
+    // Method: Insert a double[][] into the database
+public void insertDoubleArray(String tableName, double[][] array) throws SQLException {
+    String createTableQuery = "CREATE TABLE IF NOT EXISTS " + tableName + " (row_index INTEGER, col_index INTEGER, value REAL);";
+    try (Statement stmt = connection.createStatement()) {
+        stmt.execute(createTableQuery);
+    }
+
+    String insertQuery = "INSERT INTO " + tableName + " (row_index, col_index, value) VALUES (?, ?, ?);";
+    try (PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[i].length; j++) {
+                pstmt.setInt(1, i);
+                pstmt.setInt(2, j);
+                pstmt.setDouble(3, array[i][j]);
+                pstmt.executeUpdate();
             }
-            return nestedMap;
         }
     }
+}
+public String[] fetchTableAsStringArray(String tableName) {
+    List<String> results = new ArrayList<>();
+    String query = "SELECT value FROM " + tableName; 
+    
+    try (
+         Statement stmt = connection.createStatement();
+         ResultSet rs = stmt.executeQuery(query)) {
+        
+        while (rs.next()) {
+            results.add(rs.getString("value")); 
+        }
+        
+        return results.toArray(new String[0]);
+    } catch (SQLException e) {
+        System.err.println("Error fetching data from " + tableName + ": " + e.getMessage());
+        return new String[0]; 
+    }
+}
+
+
 
 
     // Close the connection

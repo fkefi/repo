@@ -1,27 +1,56 @@
-import com.cybersolvers.mycvision;
+package com.cybersolvers.mycvision;
+import java.net.URL;
+import java.sql.*;
 import java.util.*;
 
-public class CandidateService {
-    private String[][] id;
-    private Map<String, Map<String, Object>> candidates;
-    private Map<String, Map<String, Integer>> numbers;
-    private double[] weight;
-    private int numberOfCandidates;
-    private int numberOfCriteria;
-    private double[][] points;
-    SQLiteHandler handler = new SQLiteHandler("jdbc:sqlite:src/main/resources/my_database.db");
+import com.cybersolvers.mycvision.SQLiteHandler;
 
-    public CandidateService() {
-    this.id = handler.fetchTable(ID);
-    this.candidates = handler.fetchJsonAsMap(Candidates);
-    this.numbers = handler.fetchJsonAsMap(allTablesData);
-    this.weight = handler.fetchTable(Weight);
-    this.numberOfCandidates = candidates.size();
-    this.numberOfCriteria = weight.length;
-    this.points = createPoints();  // Κλήση της createPoints για να πάρεις τον πίνακα
+public class CandidateService  {
+    protected String[][] id;
+    protected Map<String, Map<String, Object>> candidates;
+    protected Map<String, Map<String, Integer>> numbers;
+    protected double[] weight;
+    protected int numberOfCandidates;
+    protected int numberOfCriteria;
+    protected double[][] points;
+    protected String jsonFilePath = "E:\\myCVision\\mycv\\src\\resources\\cv\\output.json"; 
+
+
+    protected final SQLiteHandler handler;
+    Txtreader reader;
+
+    public CandidateService() throws SQLException, ClassNotFoundException {
+        // Φορτώνουμε τον driver
+        Class.forName("org.sqlite.JDBC");
+
+        // Δημιουργούμε το connection string
+        String dbUrl = "jdbc:sqlite::resource:my_database.db";
+        this.handler = new SQLiteHandler(dbUrl);
+        this.reader = new Txtreader();
+        this.id = handler.fetchStringArray("id");
+        reader.processFiles();
+        this.candidates = reader.allCandidates;
+        this.numbers = handler.fetchMapFromDatabase("allTablesData");
+        this.weight = handler.fetchDouble1DArray("Weight");
+        this.numberOfCandidates = candidates.size();
+        this.numberOfCriteria = weight.length;
+        this.points = createPoints();
+        //System.out.println("CandidateService initialized:" + candidates + numberOfCandidates);
     }
 
-    public double[][] reviewCandidates() {
+    public CandidateService(String[][] id, Map<String, Map<String, Object>> candidates,
+     Map<String, Map<String, Integer>> numbers, double[] weight) {
+        this.id = id;
+        this.candidates = candidates;
+        this.numbers = numbers;
+        this.weight = weight;
+        this.numberOfCandidates = candidates.size();
+        this.numberOfCriteria = weight.length;
+        this.points = createPoints();
+        this.handler = null;
+    }
+
+    public double[][] reviewCandidates() throws SQLException {
         double[][] finalCandidates = new double[points.length][2];
 
         for (int i = 0; i < points.length; i++) {
@@ -31,82 +60,74 @@ public class CandidateService {
         }
 
         Arrays.sort(finalCandidates, (a, b) -> Double.compare(b[1], a[1]));
-        handler.insertArray("finalCandidates", finalCandidates, finalCandidates.length, 2);
+        if (handler != null) {
+            handler.insertDoubleArray("finalCandidates", finalCandidates);
+        }
+            
+       
         return finalCandidates;
-    } 
+    }
 
-    private double calculateScore(int i) {
+    protected double calculateScore(int i) {
         double score = 0.0;
         for (int j = 1; j < points[i].length; j++) {
+            //System.out.println("Point[" + j + "]: " + points[i][j] + ", Weight[" + (j-1) + "]: " + weight[j-1]);
             score += points[i][j] * weight[j - 1];
         }
         return score;
     }
 
-    private double[][] createPoints () {
+    protected double[][] createPoints() {
         double[][] points = new double[numberOfCandidates][numberOfCriteria + 1];
         int index = 0;
 
-        // Επεξεργασία κάθε υποψηφίου
         for (Map.Entry<String, Map<String, Object>> entry : candidates.entrySet()) {
             Map<String, Object> cand = entry.getValue();
-
-            // Ανάκτηση του fullName από τον cand
             String fullName = (String) cand.get("fullName");
-            double uniqueId = 0.0;
+            double uniqueId = -99.0;
 
-            // Αναζήτηση στο id για το αντίστοιχο ID του fullName
             for (String[] idRow : id) {
                 if (idRow[0].equals(fullName)) {
-                    uniqueId = Double.parseDouble(idRow[1]); // Μετατροπή ID σε double
+                    uniqueId = Double.parseDouble(idRow[1]);
                     break;
                 }
             }
 
-            // Έλεγχος αν δεν βρέθηκε το ID
-            if (uniqueId == 0.0) {
+            if (uniqueId == -99.0) {
                 System.out.println("Warning: No matching ID found for fullName: " + fullName);
             }
 
-            // Κλήση της compareCandidateWithNumbers για τον συγκεκριμένο υποψήφιο
             double[] matchedValues = compareCandidateWithNumbers(cand, numbers, uniqueId);
-
-            // Αποθήκευση του αποτελέσματος στον πίνακα points
             points[index] = matchedValues;
-
-            // Ενημέρωση του δείκτη
             index++;
         }
 
         return points;
     }
 
-    private double[] compareCandidateWithNumbers(Map<String, Object> cand, Map<String, Map<String, Integer>> numbers, double uniqueId) {
+    protected double[] compareCandidateWithNumbers(Map<String, Object> cand, Map<String, Map<String, Integer>> numbers, double uniqueId) {
         List<Double> matchedValuesList = new ArrayList<>();
+        matchedValuesList.add(uniqueId);
 
-
-        matchedValuesList.add(uniqueId); // Τοποθετούμε το uniqueId στην πρώτη θέση
-
-        // Πεδίο -> Κατηγορία σύγκρισης
         Map<String, String> fieldToCategory = new LinkedHashMap<>();
-            fieldToCategory.put("undergraduateUniversity", "universities");
-            fieldToCategory.put("undergraduateDepartment", "bachelorDept");
-            fieldToCategory.put("undergraduateGrade", null);     
-            fieldToCategory.put("masterUniversity", "universities");
-            fieldToCategory.put("masterDepartment", "masterDept");
-            fieldToCategory.put("masterGrade", null);
-            fieldToCategory.put("phdUniversity", "universities");
-            fieldToCategory.put("phdDepartment", "phDDept");
-            fieldToCategory.put("phdGrade", null);
-            fieldToCategory.put("englishLevel", "levels");
-            fieldToCategory.put("frenchLevel", "levels");
-            fieldToCategory.put("germanLevel", "levels");
-            fieldToCategory.put("spanishLevel", "levels");
-            fieldToCategory.put("chineseLevel", "levels");
-            fieldToCategory.put("otherLanguageLevel", "levels");
-            fieldToCategory.put("workExperienceYears", "workExperience");
-            fieldToCategory.put("officeSkills", "levels");
-            fieldToCategory.put("programmingLanguage", "yesNo");
+        fieldToCategory.put("undergraduateUniversity", "universities");
+        fieldToCategory.put("undergraduateDepartment", "bachelorDept");
+        fieldToCategory.put("undergraduateGrade", null);
+        fieldToCategory.put("masterUniversity", "universities");
+        fieldToCategory.put("masterDepartment", "masterDept");
+        fieldToCategory.put("masterGrade", null);
+        fieldToCategory.put("phdUniversity", "universities");
+        fieldToCategory.put("phdDepartment", "phDDept");
+        fieldToCategory.put("phdGrade", null);
+        fieldToCategory.put("englishLevel", "levels");
+        fieldToCategory.put("frenchLevel", "levels");
+        fieldToCategory.put("germanLevel", "levels");
+        fieldToCategory.put("spanishLevel", "levels");
+        fieldToCategory.put("chineseLevel", "levels");
+        fieldToCategory.put("otherLanguageLevel", "levels");
+        fieldToCategory.put("workExperienceYears", "workExperience");
+        fieldToCategory.put("officeSkills", "levels");
+        fieldToCategory.put("programmingLanguage", "yesNo");
 
         for (Map.Entry<String, String> entry : fieldToCategory.entrySet()) {
             String field = entry.getKey();
@@ -120,8 +141,12 @@ public class CandidateService {
                         Map<String, Integer> categoryData = numbers.get(category);
                         if (categoryData.containsKey(stringValue)) {
                             matchedValuesList.add((double) categoryData.get(stringValue));
+                        } else if ((field.equals("undergraduateUniversity") || field.equals("undergraduateDepartment") ||
+                                field.equals("masterUniversity") || field.equals("masterDepartment") ||
+                                field.equals("phdUniversity") || field.equals("phdDepartment")) &&
+                                !stringValue.equalsIgnoreCase("no")) {
+                            matchedValuesList.add(1.0);
                         } else {
-                            System.out.println("Warning: No match found for value " + stringValue + " in category " + category);
                             matchedValuesList.add(0.0);
                         }
                     } else {
@@ -130,19 +155,26 @@ public class CandidateService {
                 } else if (candValue instanceof Integer) {
                     matchedValuesList.add(((Integer) candValue).doubleValue());
                 } else if (category == null && candValue instanceof Double) {
-                    // Εισαγωγή βαθμών (grades) όταν η κατηγορία είναι null και η τιμή είναι double
-                    matchedValuesList.add((Double) candValue);
+                   double grade = (Double) candValue;
+                if (grade >= 10 ||  (grade >= 1 && grade <= 4) ) {
+                    System.out.println("Warning: Grade in field " + field + " for candidate " + cand.get("fullName") + " is " + grade + "(setting to 0)");
+                    grade = 0.0;
+                }
+                matchedValuesList.add(grade);
+                    
                 } else {
                     matchedValuesList.add(0.0);
-                }
+                } 
+            } else {
+                String fullName = (String) cand.getOrDefault("fullName", "Unknown");
+                System.out.println("Warning: No value found for field '" + field + "' in candidate '" + fullName + "'");
+                matchedValuesList.add(0.0);
             }
-            
         }
 
-        // Μετατροπή λίστας σε πίνακα double[]
-        double[] matchedValues = matchedValuesList.stream().mapToDouble(Double::doubleValue).toArray();
-
-        return matchedValues;
+        return matchedValuesList.stream().mapToDouble(Double::doubleValue).toArray();
+        
     }
 
 }
+    

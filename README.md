@@ -34,7 +34,7 @@ mvn exec:java -Dexec.mainClass="com.cybersolvers.mycvision.App"
 
 ### Εκτέλεση δοκιμών:
 ```bash
-cd myCVision/src/test/java/com/cybersolvers/mycvision
+cd myCVision
 mvn test
 ```
 

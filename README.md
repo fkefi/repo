@@ -167,8 +167,57 @@ classDiagram
   - Χρήση πινάκων και λιστών για την αποθήκευση κριτηρίων και υποψηφίων(LinkedHashMap, Array Tables, List, JSON &Gson).
   - Βάση δεδομένων SQLite για την αποθήκευση και ανάκτηση πληροφοριών.
 - **Αλγόριθμοι**:
-  - Υπολογισμός βαρών και βαθμολογιών μέσω γραμμικών συναρτήσεων.
+  - Μετατροπή των κριτηρίων σε μονάδες με βάση τις προτιμήσεις της επιχείρησης.
+  - Υπολογισμός βαθμολογιών (score) υποψηφίων μέσω γραμμικών συναρτήσεων.
   - Ταξινόμηση υποψηφίων με βάση τα σκορ.
   - Δημιουργία και αποστολή email με την ταξινομημένη λίστα υποψηφίων.
+
+---
+
+
+---
+Το πρόγραμμα μας δέχεται τα βιογραφικά μόνο σε αυτή τη μορφή txt.
+
+Full Name:
+University (Name/No):
+Department:
+Undergraduate Grade:
+Masters University (Name/No):
+Masters Department:
+Masters Grade:
+PhD University (Name/No):
+PhD Department:
+PhD Grade:
+English (Excellent/Very Good/Good/No):
+French (Excellent/Very Good/Good/No):
+German (Excellent/Very Good/Good/No):
+Spanish (Excellent/Very Good/Good/No):
+Chinese (Excellent/Very Good/Good/No):
+Other Language Level (Excellent/Very Good/Good/No):
+Years of Experience:
+Office Skills (Excellent/Very Good/Good/No):
+Programming Skills (Yes/No):
+
+παράδειγμα συμπληρωμένου txt:
+
+Full Name: Johny Sins
+University (Name/No): Massachusetts Institute of Technology
+Department: Computer Science
+Undergraduate Grade: 3.8
+Masters University (Name/No): Stanford University
+Masters Department: Artificial Intelligence
+Masters Grade: 3.9
+PhD University (Name/No): AUEB
+PhD Department: DET
+PhD Grade: 5.5
+English (Excellent/Very Good/Good/No): Good
+French (Excellent/Very Good/Good/No): Good
+German (Excellent/Very Good/Good/No): Very Good
+Spanish (Excellent/Very Good/Good/No): No
+Chinese (Excellent/Very Good/Good/No): No 
+Other Language Level (Excellent/Very Good/Good/No): No
+Years of Experience: 5
+Office Skills (Excellent/Very Good/Good/No): Excellent
+Programming Skills (Yes/No): No
 
 ---

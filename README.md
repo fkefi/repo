@@ -45,7 +45,7 @@ mvn package
 
 ### Εκτέλεση του αρχείου `.jar`:
 ```bash
-java -jar target/myCVision-1.0-SNAPSHOT.jar
+java -jar target/myCVision-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
 
 ---

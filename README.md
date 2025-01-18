@@ -20,7 +20,7 @@
 ## Οδηγίες Μεταγλώττισης
 Για να εγκαταστήσετε τις εξαρτήσεις και να μεταγλωττίσετε το έργο:
 ```bash
-cd myCVision/src/test/java/com/cybersolvers/mycvision
+cd myCVision
 mvn clean install
 ```
 
